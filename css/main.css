@@ -1162,7 +1162,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #d48a38;
+  background: #329659;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2334,3 +2334,6 @@ body {
 	background: #cecece;
 }
 */
+tbody tr:nth-of-type(odd) {
+  background: #4a4a4a;
+}
