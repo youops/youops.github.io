@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"srpopty.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="社会工程学是一种操纵他人采取特定行动的行为，该行动不一定符合目标的最佳利益，其结果包括获取信息，取得访问权限或者让目标采取特定的行动。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Social Engineering NoteBook">
+<meta property="og:url" content="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/index.html">
+<meta property="og:site_name" content="Shadow Gallery">
+<meta property="og:description" content="社会工程学是一种操纵他人采取特定行动的行为，该行动不一定符合目标的最佳利益，其结果包括获取信息，取得访问权限或者让目标采取特定的行动。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/0e02817f703d1e72ee30f68ecd10ab95.png">
+<meta property="og:image" content="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/c049d4f97b7f00533569d804b393b65a.png">
+<meta property="article:published_time" content="2019-08-10T08:06:37.000Z">
+<meta property="article:modified_time" content="2020-08-11T08:56:19.165Z">
+<meta property="article:author" content="Srpopty">
+<meta property="article:tag" content="SocialEngineering">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/0e02817f703d1e72ee30f68ecd10ab95.png">
+
+<link rel="canonical" href="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Social Engineering NoteBook | Shadow Gallery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Shadow Gallery" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shadow Gallery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Live in the shadow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2019/08/10/Social-Engineering-NoteBook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Srpopty">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shadow Gallery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Social Engineering NoteBook
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-08-10 16:06:37" itemprop="dateCreated datePublished" datetime="2019-08-10T16:06:37+08:00">2019-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 16:56:19" itemprop="dateModified" datetime="2020-08-11T16:56:19+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">社会工程学是一种操纵他人采取特定行动的行为，该行动不一定符合目标的最佳利益，其结果包括获取信息，取得访问权限或者让目标采取特定的行动。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Social Engineering NoteBook<br>Remember:<br>    Do not trust anyone.<br>    Never let them know what you are thinking.<br>    Keep slience forever.<br>                                    -Srpopty</p>
+<hr>
+<h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><h2 id="Google-Hacking"><a href="#Google-Hacking" class="headerlink" title="Google Hacking"></a>Google Hacking</h2><p><a href="https://www.google.com/" target="_blank" rel="noopener">Google</a><br>使用GoogleHacking进行被动的信息收集是最安全可靠的，但是收集的信息量有限，有时候需要根据经验以及推理进一步收集信息</p>
+<ol>
+<li><p>原则</p>
+<ul>
+<li>每次查询使用多关键词而不是句子<br>  例如”电脑 蓝屏 解决”的查询结果要比”电脑为什么蓝屏打不开”更好</li>
+<li>尽量使用和查询有关的专有关键词以缩小范围<br>  例如”电脑 蓝屏”的查询结果要比”电脑 打不开”更加精确</li>
+<li>查询尽量简洁，避免冗余关键词以增加不必要的查询结果</li>
+<li>查询的拼写不一定准确(Google有自动纠错功能)</li>
+</ul>
+</li>
+<li><p>技巧</p>
+<ul>
+<li>Google查询关键词的默认连接为”and”</li>
+<li>Google会直接返回关键词匹配的结果而不会扩展关键词的意义(Google的简洁性)</li>
+<li>Google在查询英文时会返回关键词的多种时态</li>
+<li>Google会忽略终结符<br>  例如中文的”的”，”是”，”了”等虚词，英文的”is”，”to”等</li>
+<li>Google每次查询的最大长度为32(超出部分截断)</li>
+<li>两个关键词越近，优先级越高</li>
+<li>关键词越靠前，优先级越高</li>
+<li>Google大小写不敏感</li>
+<li>Google会忽略部分标点符号，不会忽略单引号(‘)</li>
+<li>Google会包含有或没有连字符(-)的结果<br>  例如查询”Mr-Li”，Google会返回”Mr-Li”和”Mr Li”的结果</li>
+</ul>
+</li>
+<li><p>查询操作符</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>操作符表示</th>
+<th>操作符含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>term1 term2或term1 and term2</td>
+<td>同时查询包含term1和term2的结果</td>
+</tr>
+<tr>
+<td>term1 | term2或term1 or term2</td>
+<td>查询包含term1或包含term2的结果</td>
+</tr>
+<tr>
+<td>“term”</td>
+<td>强制查询结果中包含term</td>
+</tr>
+<tr>
+<td>-term</td>
+<td>强制查询结果中不包含term</td>
+</tr>
+<tr>
+<td>~term</td>
+<td>查询term或者term的同义词</td>
+</tr>
+<tr>
+<td>number1..number2</td>
+<td>数字范围</td>
+</tr>
+<tr>
+<td>term1 * term2</td>
+<td>代替任意长度字符</td>
+</tr>
+</tbody></table>
+<ol start="4">
+<li>高级搜索符<blockquote>
+<p>粗体为常用搜索符</p>
+</blockquote>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>搜索符表示</th>
+<th>搜索符含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>allinanchor:</td>
+<td>后面所有的关键词都位于网页的超链接中</td>
+</tr>
+<tr>
+<td>allintext:</td>
+<td>后面所有的关键词都位于网页的文本中</td>
+</tr>
+<tr>
+<td>allintitle:</td>
+<td>后面所有的关键词度位于网页的标题中</td>
+</tr>
+<tr>
+<td>allinurl:</td>
+<td>后面所有的关键词都位于网页的url中</td>
+</tr>
+<tr>
+<td>inanchor:</td>
+<td>关键词位于网页的超链接中</td>
+</tr>
+<tr>
+<td><strong>intext:</strong></td>
+<td>关键词位于网页的文本中</td>
+</tr>
+<tr>
+<td><strong>intitle:</strong></td>
+<td>关键词位于网页的标题中</td>
+</tr>
+<tr>
+<td><strong>inurl:</strong></td>
+<td>关键词位于网页的url中</td>
+</tr>
+<tr>
+<td><strong>cache:</strong></td>
+<td>跳转到关键词url的网页缓存</td>
+</tr>
+<tr>
+<td>define:</td>
+<td>关键词的定义</td>
+</tr>
+<tr>
+<td><strong>ext/filetype:</strong></td>
+<td>文件类型为关键词的文件</td>
+</tr>
+<tr>
+<td>movie:</td>
+<td>关键词相关的电影</td>
+</tr>
+<tr>
+<td>book:</td>
+<td>关键词相关的书籍</td>
+</tr>
+<tr>
+<td><strong>site:</strong></td>
+<td>限定在关键词url的网站中搜索</td>
+</tr>
+<tr>
+<td>related:</td>
+<td>和关键词相关的网页</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Shodan"><a href="#Shodan" class="headerlink" title="Shodan"></a>Shodan</h2><p><a href="https://www.shodan.com/" target="_blank" rel="noopener">Shodan</a><br>检索服务器信息以及开放的端口</p>
+<hr>
+<h2 id="Whois"><a href="#Whois" class="headerlink" title="Whois"></a>Whois</h2><p><a href="https://www.whois.net/" target="_blank" rel="noopener">Whois</a><br>Whois可以查询域名以及域名所有人的信息</p>
+<hr>
+<h2 id="WayBack-Machine"><a href="#WayBack-Machine" class="headerlink" title="WayBack Machine"></a>WayBack Machine</h2><p><a href="https://archive.org/web/" target="_blank" rel="noopener">WayBack Machine</a><br>可以查询网站的历史归档，比GoogleCache更加久远</p>
+<hr>
+<h2 id="公共服务器"><a href="#公共服务器" class="headerlink" title="公共服务器"></a>公共服务器</h2><p>IP/域名/端口扫描</p>
+<hr>
+<h2 id="个人网站-博客"><a href="#个人网站-博客" class="headerlink" title="个人网站/博客"></a>个人网站/博客</h2><p>很多人都喜欢建立自己的个人网站或博客，将自己的信息展示给所有可以访问的人</p>
+<hr>
+<h2 id="公开报告"><a href="#公开报告" class="headerlink" title="公开报告"></a>公开报告</h2><p>结合GoogleHacking搜索目标企业或机构的公开报告</p>
+<hr>
+<h2 id="社交平台"><a href="#社交平台" class="headerlink" title="社交平台"></a>社交平台</h2><ul>
+<li><a href="https://twitter.com/" target="_blank" rel="noopener">Twitter</a>/<a href="https://facebook.com" target="_blank" rel="noopener">FaceBook</a>/<a href="https://blippi.com/" target="_blank" rel="noopener">Blippy</a>/<a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>/<a href="https://myspace.com/" target="_blank" rel="noopener">MySpace</a>/<a href="http://pleaserobme.com/" target="_blank" rel="noopener">PleaseRobMe</a>/<a href="http://icanstalku.com/" target="_blank" rel="noopener">ICanStalkU</a>/<a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTuBe</a>/<a href="https://www.wikipedia.org/" target="_blank" rel="noopener">WikiPedia</a>…</li>
+<li>QQ/微信/新浪微博/百度贴吧/QQ空间…</li>
+</ul>
+<hr>
+<h2 id="观察"><a href="#观察" class="headerlink" title="观察"></a>观察</h2><p>使用望远镜/监控/窃听等辅助设备远程观察</p>
+<hr>
+<h2 id="垃圾收集"><a href="#垃圾收集" class="headerlink" title="垃圾收集"></a>垃圾收集</h2><p>很多垃圾桶里也藏着宝贝，不要放过任何一张写着字纸与存储设备！<br>在一些大公司的垃圾桶里经常有没有完全被碎纸机销毁的重要档案，以及员工丢弃的U盘/移动硬盘等存储设备，经过数据恢复后可以获取重要信息。</p>
+<hr>
+<h2 id="交流"><a href="#交流" class="headerlink" title="交流"></a>交流</h2><p>所有人的身体和精神都存在着一个私密空间，通常这个私密空间里藏着很多重要的信息，交流就是试图闯入这个私密空间获取信息的过程。</p>
+<ul>
+<li><p>基本规则</p>
+<ol>
+<li>不要理所当然的认为目标与你的情况完全一样</li>
+<li>不要理所当然的认为目标会按照你的方式接受与解释信息</li>
+<li>交流不是一个绝对的，一成不变的过程</li>
+<li>如果有多人参与交流，应始终假设每个参与者的情况各不相同</li>
+</ol>
+</li>
+<li><p>香农-韦佛交流模型(鼻祖模型)<br><img src="/2019/08/10/Social-Engineering-NoteBook/0e02817f703d1e72ee30f68ecd10ab95.png" alt></p>
+<ul>
+<li><p>信息源: 创造信息</p>
+</li>
+<li><p>发送方: 将信息编码为信号</p>
+</li>
+<li><p>信道: 传输信号</p>
+</li>
+<li><p>接收方: 从信号中解码信息</p>
+</li>
+<li><p>目的地: 信息的重点</p>
+<p>问题</p>
+</li>
+</ul>
+<ol>
+<li>技术问题: 信息发送的准确性</li>
+<li>语义问题: 信息表达的准确性</li>
+<li>效率问题: 接收到的信息对行为影响的有效性</li>
+</ol>
+</li>
+<li><p>贝罗模型(SMCR发送者-信息-信道-接收者通信模型)</p>
+<ul>
+<li><p>S-信息源: 常规技巧/态度/知识/社交系统/文化</p>
+</li>
+<li><p>M-信息: 内容/元素/处理/结构/编码</p>
+</li>
+<li><p>C-信道: 看/听/触/闻/尝</p>
+</li>
+<li><p>R-接收方: 常规技巧/态度/知识/社交系统/文化</p>
+<p>符号和标识的形式属性<br>符号/表情及其使用者之间的关系<br>符号和标识之间的联系及其含义</p>
+</li>
+</ul>
+</li>
+<li><p>通信的事物模型<br><img src="/2019/08/10/Social-Engineering-NoteBook/c049d4f97b7f00533569d804b393b65a.png" alt></p>
+</li>
+<li><p>制定交流模型</p>
+<ul>
+<li>信息源: 社会工程师</li>
+<li>信道: 传达方式(语言/非语言)</li>
+<li>信息: 向接收者传达的内容(命令)</li>
+<li>接收者: 目标</li>
+<li>反馈: 当有效地将信息传达出去后，希望目标给予的回应(预期结果)</li>
+</ul>
+</li>
+</ul>
+<h1 id="诱导"><a href="#诱导" class="headerlink" title="诱导"></a>诱导</h1><p>诱导是一种引发或诱发某种特定行为的刺激</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><ol>
+<li>大部分人希望看上去比较有礼貌，尤其是对陌生人</li>
+<li>专业人士希望自己看起来见多识广</li>
+<li>如果得到赞赏，大部分人通常会更加乐意分享信息(多巴胺)</li>
+<li>大部分人不会为了撒谎而撒谎</li>
+<li>大部分人对貌似关心自己的人会比较友善</li>
+</ol>
+<hr>
+<h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><ol>
+<li>表现得自然，不要紧张</li>
+<li>拥有足够的知识背景(不能伪装成自己不可能成为的人)</li>
+<li>切忌<strong>贪婪</strong></li>
+</ol>
+<hr>
+<h2 id="铺垫"><a href="#铺垫" class="headerlink" title="铺垫"></a>铺垫</h2><p>以一种<strong>隐晦或婉转</strong>的方式植入想法或思路</p>
+<hr>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2><ol>
+<li>不惧与他人交谈，并处于非常规的场景中</li>
+<li>真正关心他人，即使是陌生人，乐于分享和倾听</li>
+<li>只在有了真正的解决方案时才提供建议或帮助</li>
+<li>在他人说出自己的问题时，不做主观判断</li>
+</ol>
+<hr>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ul>
+<li>唤醒他人的自我<br>  精心地吹捧会促使目标说出一些重要的信息</li>
+<li>表达共同的主题<br>  一种迅速拓展关系的手段，会使目标同意进一步地接触，构建信任与和谐的关系</li>
+<li>故意说错<br>  大部分人在听到错误的表达后会有矫正的欲望，似乎他们的正确性受到了挑战，以告诉他人显示自己的学识渊博，不能容忍错误表达</li>
+<li>主动提供信息<br>  利用”责任感”，在交流中主动提供信息会促使目标提供同样价值的信息，人们喜欢分享类似的信息</li>
+<li>假装高深<br>  展示一些信息，假装知道一些内情，使用诱导继续展开话题</li>
+<li>利用酒精地影响(第三方手段)<br>  酒后吐真言</li>
+</ul>
+<hr>
+<h2 id="提问的技术"><a href="#提问的技术" class="headerlink" title="提问的技术"></a>提问的技术</h2><ul>
+<li><p>开放式问题<br>  目标的不仅仅用”是”或”不是”可以回答的问题<br>  例如”为什么”/“怎样”<br>  若目标很抵触开放式问题，可以使用<strong>金字塔方法</strong>，从范围窄的问题开始询问，一步一步拓宽问题</p>
+</li>
+<li><p>封闭式问题<br>  限制目标回答的范围(有穷)<br>  通常不是为了得到详细的信息，而是对话题进行引导</p>
+</li>
+<li><p>引导式问题<br>  具有答案暗示的开放性问题<br>  引导目标，为其提供表达自己观点的机会，但是限制其发挥范围<br>  暗示目标你对问题的答案已经有所了解</p>
+</li>
+</ul>
+<blockquote>
+<p>人们通常会构造自己的记忆来契合自己对世界的认知，因此在进行诱导时可以利用这一手段来构造或扰乱目标的记忆</p>
+</blockquote>
+<ul>
+<li><p>假设性问题<br>  假设目标对问题已经拥有特定的知识<br>  通常此类问题是确定目标是否拥有特定的信息<br>  不要让目标了解事情的全貌，否则会丧失话题控制权<br>  不能通过假设性问题来指责目标的错误<br>  将事实贯穿在问题中，尽量不要携带虚假信息</p>
+</li>
+<li><p>原则</p>
+<ol>
+<li>问题太多会吓跑目标</li>
+<li>问题太少会让目标觉得不自在</li>
+<li>一次只问一个问题，同时提出的问题太多会使目标出现认知负荷，从而使目标有可能下意识选择性的不回答一些问题</li>
+<li>不能显得太急切或太无趣</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="建立密切关系"><a href="#建立密切关系" class="headerlink" title="建立密切关系"></a>建立密切关系</h2><ul>
+<li>人为时间限制<br>  人们在遇到一个试图接近自己的陌生人时通常首先会下意识思考”这个人在我的生活中会停留多久”，当人们意识到这个陌生人会在自己的生活中停留很长时间的话会产生戒备心理<br>  因此在接近目标时首先要让目标感觉自己不会打扰目标太久，不要让目标觉得自己的兴趣点在对方身上，使目标安心<br>  例如”可以打扰你一会吗”/“可以问你一个小问题吗”</li>
+<li>匹配的非语言行为<br>  控制环境/微表情/肢体语言</li>
+<li>放慢语速<br>  说话越快越容易出错，也会显得不自信</li>
+<li>同情<br>  同情/悲伤是最快与目标建立关系的方式</li>
+<li>自我抑制<br>  延迟自我意识，使目标的观点/想法/需求优先<br>  表现得谦逊<br>  压低声音<br>  轻柔的/无性别区分地碰触<br>  温和的目光<br>  较低的身体姿势</li>
+<li>包容<br>  适当地包容目标，对目标进行恭维会使目标大脑释放多巴胺</li>
+<li>询问开放式问题<br>  尽量多用开放式问题来拓展话题</li>
+<li>让步<br>  适当与目标分享一些有价值的信息</li>
+<li>互利<br>  给予通常会使目标有回报的需求</li>
+<li>调整预期<br>  不要贪婪，见好就收，需要对诱导结果有一个预期目标</li>
+</ul>
+<h1 id="伪装"><a href="#伪装" class="headerlink" title="伪装"></a>伪装</h1><p>创造虚构的环境以去哪说目标泄露信息或者做出某种行为</p>
+<ul>
+<li><p>前期调查越充分，成功的几率越大(信息收集)<br>  可以利用目标的个人性格或情感依托进行伪装</p>
+</li>
+<li><p>植入个人爱好<br>  在伪装中加入自己感兴趣的话题和活动可以使自己对伪装更加<strong>自信</strong><br>  <strong>自信</strong>有助于说服目标相信你，自信心始终与没目标和任务环境有关</p>
+</li>
+<li><p>认知失调理论<br>  人们倾向于协调自己的信仰/观点乃至几乎所有的认知，如果态度和行为之间存在不协调，就必须修正这种不协调</p>
+<ul>
+<li>影响因素<ol>
+<li>不协调的信念的数量</li>
+<li>每个信念的重要性</li>
+</ol>
+</li>
+<li>消除方式(按照推荐的优先级排序)<ol>
+<li>增加更多协调的信念以超过不协调的信念</li>
+<li>降低不协调信念的重要性</li>
+<li>改变不协调的信你以使它们协调(通过观点/行动/知识使伪装与目标的认知一致或协调)<br>建立信念系统</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>练习方言或表达方式<br>  用不同方言与人们共同会留下深刻的印象</p>
+</li>
+<li><p>使用电话<br>  不需要与目标面对面，降低伪装的成本<br>  使用”剧本大纲(Script)”<br>  用适当的方法/语速/语调/音调与措辞表达情感<br>  伪造电话号码</p>
+</li>
+<li><p>伪装越简单越好<br>  保持故事情节/事实和细节的简单性会增强其可信性，过于复杂会使目标甚至自己出现认知负荷<br>  不过分追求细枝末节，允许故事发展，使目标用想象力填补故事空隙<br>  一些错误会使故事更加真实</p>
+</li>
+<li><p>伪装必须显得自然<br>  不要考虑自己的感受<br>  不要把事情太当真<br>  学会寻找相关信息<br>  积累更多经验</p>
+</li>
+<li><p>为目标提供逻辑结论或下一步安排<br>  人们都希望被告知下一步应该做什么<br>  注意提出的要求应该和自己伪装的身份相一致</p>
+</li>
+<li><p>适当的使用工具<br>  标志/工具设备/配套服装/名片等</p>
+</li>
+</ul>
+<h1 id="社会工程心理学"><a href="#社会工程心理学" class="headerlink" title="社会工程心理学"></a>社会工程心理学</h1><h2 id="思维模式"><a href="#思维模式" class="headerlink" title="思维模式"></a>思维模式</h2><p>使目标认可你的非语言行为，用目标认可的表达方式，并且在音量/语调和方言上相匹配</p>
+<ul>
+<li><p>感官<br>  视觉/听觉/触觉/味觉/嗅觉<br>  通常在这五种感官中某一种会占主导地位，其中前三种为主要的感官思维模式</p>
+</li>
+<li><p>视觉思维者(大部分人)<br>  通常记得事物的米娜毛，能够清晰地记住场景<br>  可以清楚的描述过去的时间，甚至可以构建未来事件的图像<br>  视觉输入与他们的决策相关，会依据在视觉上吸引他们的东西来做决策</p>
+<ul>
+<li>特征点<br>  我<strong>明白</strong>你的意思/我<strong>看</strong>那样挺好的/我大概有点<strong>印象</strong>了</li>
+<li>次感元<br>  光线(亮/暗)、尺寸(大/小)、颜色(黑白/彩色)、运动(快/慢)、焦点(清晰/模糊)</li>
+</ul>
+</li>
+<li><p>听觉思维者<br>  会记住事件的声音，相比于视觉思维者，通过倾听而可以获取更多信息<br>  总能记住事情发生的方式，可以用声音唤起记忆<br>  和听觉思维者说话时需要注意措辞，听觉思维者根据听到的词语表达来进行决策</p>
+<ul>
+<li>特征点<br>  <strong>洪亮</strong>并且<strong>清楚</strong>…/这件事<strong>告诉</strong>我…/<strong>听起来</strong>不错</li>
+<li>次感元<br>  音量(大/小)、音调(高/低)、音准(高/低)、节拍(快/慢)、距离(远/近)</li>
+</ul>
+</li>
+<li><p>动觉思维者<br>  特别在意感受，能够记住事物对自己带来的感受<br>  通常喜欢用自己的双手感知物体<br>  使动觉思维者会想起与某一件事相关联的感觉/情感，进行感觉上的练习</p>
+<ul>
+<li>特征点<br>  我能<strong>抓住</strong>那个想法的要点/那个是怎么<strong>抓住</strong>你的/我会<strong>联系</strong>你的</li>
+<li>次感元<br>  强度(强/弱)、面积(大/小)、质地(粗糙/光滑)、温度(冷/热)、重量(重/轻)</li>
+</ul>
+</li>
+<li><p>辨别主导感官<br>  自我介绍-&gt;开始简短交流-&gt;观察-&gt;提问</p>
+</li>
+</ul>
+<p>识别并利用他人的主导感官，使其处于非常舒适的氛围中</p>
+<hr>
+<h2 id="神经语言程序学-NLP"><a href="#神经语言程序学-NLP" class="headerlink" title="神经语言程序学(NLP)"></a>神经语言程序学(NLP)</h2><p>一种人际沟通模型，主要关注成功的行为模式和内在的主观经验之间的关系，一种非传统的治疗系统，旨在教育人们要有自我意识和有效沟通，并改变他们的心里和情绪行为的模式</p>
+<ul>
+<li><p>准则<br>  人们必须通过潜意识思维做出改变，新的行为必须符合其原始的积极意向，而且改变必须发生于思维状态内部，而不仅仅是行为层面</p>
+</li>
+<li><p>语音语调<br>  使用嵌入式指令影响目标以某种方式进行思考或采取某种行动<br>  通过变换语调强调句子中的某些词语，是人们的潜意识将重点放在那些词语上</p>
+</li>
+<li><p>句型结构<br>  改变句子中的语音下降点嵌入命令</p>
+<pre><code>句尾音调
+上扬 - 疑问
+平滑 - 陈述
+下降 - 命令</code></pre></li>
+<li><p>终极声音<br>  降低命令的语调<br>  让声音具有动感<br>  发挥气息的极限<br>  使胸腔产生共鸣</p>
+</li>
+<li><p>要点</p>
+<ol>
+<li>通过使用音调和重音在目标潜意识中嵌入命令</li>
+<li>谨慎的选择用词<br> 积极的词语使目标积极思考<br> 消极的词语是目标不会思考太多</li>
+<li>创建一个可用于当面或电话社会工程学命令语句列表</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="思维缓冲溢出"><a href="#思维缓冲溢出" class="headerlink" title="思维缓冲溢出"></a>思维缓冲溢出</h2><ul>
+<li><p>基本原则<br>  人们最终在有意识地做出决定时，他们的决定不仅仅依据听到的内容，还有涉及视觉/感觉和情感</p>
+</li>
+<li><p>预期定律<br>  人们通常会遵循他们感受到的别人的期望或要求来做决定</p>
+<pre><code>例如
+&quot;你认识我的那个邻居拉尔夫吗，他总是开着那辆绿色的车&quot;
+则在目标中植入的信息如下：
+    我认识我的邻居
+    他叫拉尔夫
+    他有驾照
+    他开着一辆绿色的车</code></pre></li>
+<li><p>嵌入式指令</p>
+<ul>
+<li><p>基本原则</p>
+<ol>
+<li>指令简短(3-4个字符)以避免认知负荷</li>
+<li>在普通的语句中加入强调(语气要正常)</li>
+<li>搭配适当的面部表情和肢体语言</li>
+</ol>
+</li>
+<li><p>创建一种情绪或思维模式<br>  当你…/当你…时感觉是怎样的/有个人能够…/既然你…</p>
+</li>
+<li><p>巧用引用或故事<br>  将指令嵌入故事中</p>
+</li>
+<li><p>善用否定<br>  利用人们的逆反心理</p>
+</li>
+<li><p>使目标想象<br>  使目标需要适当的联想才能回答</p>
+</li>
+<li><p>思维缓冲区溢出 = 预期定律 + 思维铺垫 + 嵌入式指令</p>
+<p>首先在与目标开始交谈时结合使用短语/肢体语言和假定性言辞，假设所要求的事情已经实现<br>之后通过一些语句在目标思维中做铺垫，方便后续指令植入</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="手势"><a href="#手势" class="headerlink" title="手势"></a>手势</h2><ul>
+<li>锚定<br>  用特定的手势与一种类似表达形式相关联<pre><code>例如:
+    当谈论到积极的想法时使用右手手势
+    当谈论到消极的想法时使用左手手势
+    即可锚定左手代表消极，右手代表积极</code></pre></li>
+<li>镜像<br>  尝试匹配目标的个性化手势<br>  目标在看到熟悉的手势时会有自在的感觉<br>  但是不要完全相同，否则会起到反作用</li>
+<li>手势摆放<br>  观察目标手臂及手的摆放和位置<ul>
+<li>感到放松时肘部会没有拘束的放在身体两侧</li>
+<li>感到威胁/害怕时肘部向胸腔收近(保护重要器官)</li>
+<li>目标可能会用手势描述出不会说出的信息</li>
+<li>手掌张开表示诚意</li>
+<li>将指尖搭在一起代表自信，认为自己很有权威</li>
+<li>敲击/打击手指代表焦虑</li>
+<li>摸脸/下巴代表思考</li>
+<li>触摸头发代表不安</li>
+<li>触摸耳朵代表犹豫不决</li>
+</ul>
+</li>
+</ul>
+<p>适当利用手势有助于伪装</p>
+<ul>
+<li>不要刻意记手势，而是要记住手势的附加信息</li>
+<li>避免单调/重复的手势</li>
+<li>避免表示焦虑或者动作过大的手势</li>
+<li>手势不要过多</li>
+</ul>
+<hr>
+<h2 id="聆听"><a href="#聆听" class="headerlink" title="聆听"></a>聆听</h2><p>一个人讲话的方式可以透露出很多信息(情绪/语速/状态)</p>
+<ul>
+<li>集中注意力，高度关注目标<br>  密切专注目标的肢体语言/面部表情</li>
+<li>提供聆听的证据<br>  表现出真诚与微笑，不时地点头，证明正在积极地聆听目标</li>
+<li>提供有价值的反馈<br>  时不时地重述或概括聆听到的内容<br>  或者提问相关问题代表有很强的欲望去深入理解</li>
+<li>不要打断目标<br>  尽量不要打断，但是情况适当的打断也是一种手段</li>
+<li>适当的反应<br>  保持尊重，注意自己的情绪，尽量抑制自己的成见<br>  反射性响应<ul>
+<li>积极聆听</li>
+<li>当需要做出回应时注意自己的情绪</li>
+<li>重复/概括听到的内容</li>
+<li>可以用一些含糊的词语做出反应</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="共识"><a href="#共识" class="headerlink" title="共识"></a>共识</h2><p>无意识的人类互动最重要的特性或特征之一<br>是看法上的共性，与交谈的另一方达成同步，或处于相同的波段</p>
+<ul>
+<li>真正的想要了解他人</li>
+<li>注意自身形象(着装/外表/个人卫生)</li>
+<li>善于聆听</li>
+<li>留心对他人的影响，注意自己的第一印象</li>
+<li>尽量少谈论自己，让目标谈论他们自己</li>
+<li>同情心<br>  感同身受，认真倾听，并确定潜在的情感，站在对方的角度思考，但是不要显得盛气凌人</li>
+<li>扩大自己的知识领域</li>
+<li>表达好奇心<br>  保持心胸开阔，探究并且接受别人在某一话题上的想法</li>
+<li>满足他人的需求<br>  创造一个环境满足对方的需求<pre><code>四类基本心里需求：
+归属/联系/爱
+权力/地位/能力
+自由/责任
+娱乐/学习</code></pre></li>
+<li>使用NLP<ul>
+<li>呼吸频率保持一致</li>
+<li>语音/语调保持一致<br>  留心关键短语</li>
+<li>肢体语言保持一致<br>  表现出类似肢体语言</li>
+</ul>
+</li>
+<li>测试共识的方法<br>  做一些下意识的动作，观察目标是否出现类似动作</li>
+</ul>
+<hr>
+<h2 id="杏仁核劫持"><a href="#杏仁核劫持" class="headerlink" title="杏仁核劫持"></a>杏仁核劫持</h2><p>情绪处理的过程是无意识的，自动的，并且受到输入感官的影响</p>
+<ul>
+<li>杏仁核<br>  杏仁核状大规模灰质，存在于大脑前内侧中间，是颞叶皮层的一部分<br>  人类的情感处理器，处理所有形态的输入（感觉），并且投射到大脑的不同区域（脑干、下丘脑、海马体、基底神经节、大脑皮层）</li>
+<li>自动驾驶<br>  原理：杏仁核处理情感的速度比大脑快<br>  杏仁核激活，新皮质近乎关闭，肾上腺素、荷尔蒙水平及血压升高，记忆开始变得低效，失去高效交流的能力<br>  触发式强制控制负责情绪、同情或社交的脑区可以使人丧失逻辑能力<br>  杏仁核会不断审视环境刺激，寻找触发人们理解周围世界的非语言反馈<br>  感受周围的环境，观察他人从非语言形式表现出的消极情绪，例如有时莫名的不安，紧张，恐惧等，有助于人们保持警惕<br>  情绪可以传染（环境、氛围）</li>
+<li>原理<br>  如果杏仁核处理一些强烈的感觉和情绪，杏仁核会关闭大脑的逻辑思维中心，只依靠感性处理中心作决策（情绪化的决策）</li>
+<li>利用方程式<br>  （感官输入&gt;共情）+逻辑中心关闭=杏仁核劫持+提出要求<br>  杏仁核劫持=辅助非语言行为+情感共鸣内容+提出适当要求</li>
+<li>控制方法<br>  杏仁核劫持是快速的，并且可被强烈的情绪延长，所以如果碰到杏仁核被劫持的情况，停下来暂时屏蔽强烈情感休息一会再做决定</li>
+</ul>
+<h1 id="询问与审讯"><a href="#询问与审讯" class="headerlink" title="询问与审讯"></a>询问与审讯</h1><ul>
+<li><p>区别<br>  询问: 目标在身体和心理上都处于舒适的状态<br>  审讯: 通过审讯场所与问题向目标施压，使其感觉不适</p>
+</li>
+<li><p>留意目标的变化</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>特征</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>身体姿势</td>
+<td>直立/瘫倒/倾斜</td>
+</tr>
+<tr>
+<td>脸色</td>
+<td>苍白/红/白/变化</td>
+</tr>
+<tr>
+<td>头部</td>
+<td>昂首/倾斜/前/后</td>
+</tr>
+<tr>
+<td>眼睛</td>
+<td>方向/睁开的状态</td>
+</tr>
+<tr>
+<td>手/脚</td>
+<td>动作/位置/颜色</td>
+</tr>
+<tr>
+<td>口唇</td>
+<td>位置/颜色/状态</td>
+</tr>
+<tr>
+<td>主要感觉</td>
+<td>视觉/听觉/活力/感觉</td>
+</tr>
+<tr>
+<td>声音</td>
+<td>音高/速率/变化</td>
+</tr>
+<tr>
+<td>词语</td>
+<td>长/短/音节的数量/功能障碍/停顿</td>
+</tr>
+</tbody></table>
+<p>注意目标的措辞（太短：预先演练过/太长：在准备撒谎）<br>注意时态/代词的变化<br>观察目标的一系列变化，确定目标的自然状态(基准)</p>
+<ul>
+<li><p>方法</p>
+<ul>
+<li>正面交锋<br>  已经确定目标要做的事，并且要求目标立刻去做(NLP/命令)</li>
+<li>主题延伸<br>  审讯者假定一个故事场景并多次传递给目标，观察目标的反应<br>  展示辅助性的证据直接支持所描述的场景(伪装)</li>
+<li>应付拒绝与反对<br>  预先制定退出策略，仔细组织主题从而预先消除可能的反对</li>
+<li>保持目标注意力集中<br>  当目标开始考虑行为的不良后果时，克服内在的恐惧，镇定的按照预定目标驱动对方(驱动目标使其无法分神考虑后果)</li>
+<li>展示其他途径(备用计划)</li>
+<li>制定计划<br>  人物：目标的详细信息<br>  事件：准备工作<br>  时间：计划执行的时间段与原因（需要证据支持）<br>  地点：计划的执行地点，确定最佳场所（环境因素）<br>  原因：计划的目标（计划成功的标准）<br>  方式：使用什么样的方式从目标获取信息（NLP/嵌入式指令/缓冲区溢出）</li>
+</ul>
+</li>
+<li><p>其他审讯技巧</p>
+<ul>
+<li>直接<br>  保持足够的信心，并且假设目标会进行反馈</li>
+<li>间接<br>  使目标成为谈话主角，通过诱导或精心设计的问题使目标泄漏信息</li>
+<li>博取同情<br>  在谈话中表达对目标的同情，留下善解他人的印象</li>
+<li>激发情绪<br>  利用前期已经收集的信息，激发并利用目标的情绪</li>
+<li>合乎逻辑<br>  充满信心，使自己的伪装合乎逻辑</li>
+<li>咄咄逼人<br>  提高音量，加快语速，使目标来不及思考合理性</li>
+<li>组合<br>  根据目标个性组合多种方法</li>
+<li>保持冷静<br>  被抓到的时候保持冷静/镇定，从而降低警觉</li>
+<li>挽回面子<br>  挽回目标的面子，给对方一个很好的借口</li>
+<li>自尊心膨胀<br>  令对方感到自豪，鼓吹目标的成就</li>
+<li>夸张<br>  夸大事件的严重性（在合理的范围内）</li>
+<li>循序渐进<br>  一步一步慢慢的突破</li>
+</ul>
+</li>
+</ul>
+<h1 id="影响与操纵"><a href="#影响与操纵" class="headerlink" title="影响与操纵"></a>影响与操纵</h1><p>让他人想要以你所期许的方式去行动/反应/思考或建立信仰的过程</p>
+<ul>
+<li><p>基本原则</p>
+<ol>
+<li>设定明确的目标<br> 想要什么？<br> 如何确认目标已经完成？</li>
+<li>构建共识<br> 了解目标精神状态，站在对方的立场上考虑，表达友善</li>
+<li>洞察环境<br> 对自身和周围环境保持警觉（观察/倾听）</li>
+<li>灵活应变</li>
+<li>内省<br> 理解自己的情感</li>
+</ol>
+</li>
+<li><p>战术</p>
+<ul>
+<li><p>回报——固有期望<br>  人们会帮助那些帮助过他们的人<br>  人们不会伤害那些曾经帮助过他们的人</p>
+<ol>
+<li>送出某样有价值的东西</li>
+<li>制造受惠的感觉，价值越高，受惠感越大</li>
+<li>提出合理的请求</li>
+</ol>
+</li>
+<li><p>义务<br>  基于社会/法律和道德要求，以及责任/合约或承诺人们认为必须要做的事<br>  称赞-&gt;提出请求<br>  黄金法则：己所不欲，勿施于人（对别人友好）</p>
+</li>
+<li><p>让步——对回报的利用（礼尚往来）<br>  必须对接受方有价值<br>  原则</p>
+<ol>
+<li>表示出让步<br> 明确让对方知晓何时作出何种让步</li>
+<li>要求和定义回报<br> 植入回报的种子</li>
+<li>视情况作出让步<br> 作出没有风险的让步</li>
+<li>分批作出让步<br> 所有的让步不一定一次到位</li>
+</ol>
+</li>
+<li><p>稀缺——创造欲望<br>  对可供选择的资源进行分配，由待分配物的稀缺性驱动，资源越稀少，物品的<strong>感知价值</strong>越高</p>
+<ol>
+<li>利用稀缺操纵人们的注意力（人们渴望得到难以企及的东西——成就感）</li>
+<li>制造紧迫感</li>
+<li>利用信息的稀缺性提升信息的价值</li>
+</ol>
+</li>
+<li><p>权威——不敢质疑<br>  人们更愿意听从他们眼中权威人士的指导和建议</p>
+<pre><code>类型：
+    法律权威（保安/律师等）：伪装成大众敬畏或尊敬的角色
+    组织权威（老板/领导者/CEO等）：管理阶层
+    社会权威：社会团体中天生的领导者</code></pre><p>  在适当情况下人们更可能对来自权威的主张作出快速反应，尽管这种所谓的权威甚至根本没有露面<br>  自动对权威作出反应时，人们往往是对权威的符号作出反应，而不是其本身（头衔/衣服/汽车/名片等符号）</p>
+</li>
+<li><p>承诺和一致性<br>  通常人们会在言语、态度和行为上保持一致<br>  根据以往的经验或期望所应有的预期<br>  在作出承诺、明确立场后，人们会更加愿意同意那些和他们初始承诺一致的要求</p>
+<p>  <strong>获取信息承诺</strong></p>
+<ul>
+<li><p>询问那谢目标必须回答“是”的问题</p>
+</li>
+<li><p>希望“自己”能保持言行一致是很好的激励因素</p>
+</li>
+<li><p>人们渴望在他人看来自己始终言行一致</p>
+</li>
+<li><p>人们几乎不会违背自己口头、公开或自愿作出的承诺</p>
+</li>
+<li><p>通过扩大范围来增强其承诺的严肃性</p>
+<p>促使目标承诺采取一些小的行动或表示认同，利用这个承诺扩大范围，从而产生更好的效果</p>
+</li>
+</ul>
+</li>
+<li><p>喜欢<br>  人们喜欢那些喜欢自己的人<br>  人们会倾向于接受朋友给出的坏建议、而不是陌生人给出的好建议</p>
+<ul>
+<li>原则<ul>
+<li>建立共识</li>
+<li>自信积极的态度</li>
+<li>与目标和环境保持一致</li>
+<li>有效的进行沟通</li>
+</ul>
+</li>
+<li>月晕效应<br>  某人的一种特质会影响扩展到其他品质<br>  倾向于关注他人的优点会影响一个人的决定<br>  人们会倾向于将美丽和其他成功特性联系在一起<br>了解目标-&gt;伪装成目标期望的样子-&gt;构建信任关系</li>
+<li>过度满足<br>  过多的正面肯定可能会起到负面效应<br>  需要通过问题或错误来给出肯定</li>
+</ul>
+</li>
+<li><p>共识/社会认同<br>  社会影响会导致一个大的社会群体对正确或错误的判断达成一致</p>
+<ul>
+<li>社会认同<br>  人们会做他人正在做的事情，尽管可能不知道那件事情是否是符合自己价值的<br>  如果和周围人群高行为一致，就不会显得失礼</li>
+<li>不确定<br>  人们在确定并且形式不明的情况下，更可能观察他人的行为，并认为这种行为是正确的</li>
+<li>相似性<br>  人们更倾向于跟随与自己类似的人都引导</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>框架<br>  人活中的信息和经历，能够在人们必须作出决定的时候改变其反应方式<br>  任何可以用来改变人们的认知或者人们做决定的方式的东西</p>
+<ul>
+<li><p>参考框架<br>  一组看法、条件或假设，决定了人们如何接近、认知或理解某一事物</p>
+</li>
+<li><p>目标感知和价值<br>  目标对一件事物的认知会提高或降低它的价值</p>
+<p>  例如80%的瘦肉和20%的肥肉</p>
+</li>
+<li><p>框架联盟</p>
+<ul>
+<li><p>框架共振<br>  个人框架由于一致或互补而形成关联</p>
+</li>
+<li><p>条件</p>
+<ul>
+<li>框架努力成果的鲁棒性、完备性和彻底性<br>  诊断框架的问题<br>  分析并找出解决方案<br>  如果成功了，号召行动</li>
+<li>提议的框架和大众信仰系统之间的关系<br>  必须要与个人的核心信仰保持一致</li>
+<li>框架与参与者现实情况的关联<br>  框架必须与目标本人相关，如目标经历的关系必须可信并且可验证</li>
+<li>对当前社会变迁的持续关注，以及框架在当前时代出现的时间点</li>
+</ul>
+</li>
+<li><p>框架桥接（联系）<br>  就某一主题而言，思想上一致，但结构上互不关联的两个框架的连接<br>  在深入了解目标的框架后，发现两者之间的联系，利用这一联系将目标带入你的框架——伪装</p>
+</li>
+<li><p>框架放大<br>  对一个与某议题、问题或者一组事件有关的解释性框架进行阐述及激励——扩大或把焦点放在目标的价值观或信仰上<br>  涉及强调某一事件比其他事件更重要，从而使这个时间能够轻松与其他事件联系起来<br>  可以成功的让现有框架产生混乱，使具有特定信仰的人远离他们的信仰</p>
+</li>
+<li><p>框架扩展<br>  是一种变动的成果，通过将提议的框架边界扩展到一群人的观点、兴趣，特别是情绪，将参与者引入其中<br>  通过扩展框架的边界，将目标的其他主题或兴趣引入其中，与他们达成联盟（一致）<br>  太多的扩展可能会削弱人们对原有框架的支持，导致其在一定程度上丧失吸引力</p>
+</li>
+<li><p>框架转换<br>  当提议的框架很难引起共鸣，而且有时与传统的生活方式、礼制衣机现有的解释框架背道而驰的时候，就需要对框架进行转换<br>  通过提出新的论点说明为什么新的框架更好，意图将目标原有的框架思维和信念转换为新的样子<br>  需要新的价值观和理念来确保人们参与其中，并得到他们的支持（时间/精力/教育/逻辑/深厚的感情纽带）</p>
+</li>
+</ul>
+</li>
+<li><p>利用框架战术</p>
+<ul>
+<li><p>说的每件事都会唤起一个框架<br>  利用语言进行描绘，使目标大脑中描绘出对应的事物</p>
+</li>
+<li><p>框架中定义的词句会唤起思维框架<br>  不必使用确切的字词为他人庙会设想的框架<br>  通过间接表达控制对象的思维（事先计划）</p>
+</li>
+<li><p>否定框架<br>  告诉目标要小心、当心或提防某事，会自动将其引入设想的框架中</p>
+</li>
+<li><p>让目标思考框架会强化框架<br>  每次大脑在关注或考虑某事的时候，该事件会得到强化<br>  通过省略某些细节，仅透露出想要透露的细节，可以创建出他们想要目标思考或感觉的框架<br>  贴标签：通过描述性词句为某事打上标签，将目标带入设定的框架</p>
+<p>适当改变呈现、设定道德选择和价值困境的方式，会对人们的政治选择和政策产生深远的影响</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="操纵"><a href="#操纵" class="headerlink" title="操纵"></a>操纵</h2><p>通过自身的技巧控制或影响他人，达到自己的目的</p>
+<ul>
+<li>目的<br>  战胜目标的批判性思维</li>
+<li>自动应答<br>  大脑在接收到问题后会自动作出应答</li>
+<li>条件反射<br>  通过不断的适应，人们会将特定的声音、行为与感觉和情绪相关联</li>
+<li>转移<br>  将人们的注意力从他们的事实行为上转移，改变目标的关注焦点</li>
+<li>问题构造<br>  首先构造一个可怕的问题，然后提供“事实”作为证据，证明问题与解决方案的真实性</li>
+<li>色彩<br>  操纵目标的情绪</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>颜色</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>白色</td>
+<td>纯洁/明亮/干净/安全/中立/善良/忠诚</td>
+</tr>
+<tr>
+<td>黑色</td>
+<td>权利/高雅/神秘/力量/权威/深度/稳定/平静/宁静/强化其他色彩</td>
+</tr>
+<tr>
+<td>红色</td>
+<td>喜悦/兴奋/喜庆/行动/能量/健康/速度/激情/欲望/爱/刺激情绪/心跳呼吸加快/血压升高/力量/冲动/武力/威胁/征服/暴力/复仇</td>
+</tr>
+<tr>
+<td>橙色</td>
+<td>温暖/热情/吸引/决心/力量/忍耐/鼓舞/活力/刺激食欲/不安全/无知/迟缓</td>
+</tr>
+<tr>
+<td>金色</td>
+<td>明亮/智慧/财富/威望</td>
+</tr>
+<tr>
+<td>黄色</td>
+<td>能量/乐观/喜悦/高兴/忠诚/精神饱满/让对方觉得成为焦点和受重视/少量应用会激发正面情绪，过多会让目标注意力不集中</td>
+</tr>
+<tr>
+<td>绿色</td>
+<td>大自然/和谐/生命/丰饶/雄心/保护/和平/平静/安全/过多会有贪婪/内疚/嫉妒/混乱</td>
+</tr>
+<tr>
+<td>蓝色</td>
+<td>天空/海洋/智慧/直觉/真理/宁静/健康/力量/知识/镇定/冷静/使新陈代谢变慢/眼睛最容易适应/寒冷/忧郁/沮丧</td>
+</tr>
+<tr>
+<td>紫色</td>
+<td>皇家/高贵/奢侈/创意/神秘</td>
+</tr>
+<tr>
+<td>棕色</td>
+<td>地球/可靠/易接近/惯例/秩序/牢固/相关/秩序感</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>操纵激励<br>  刺激人们去采取行动的东西</p>
+<ul>
+<li>金钱激励<br>  例如买彩票和优惠券等</li>
+<li>意识激励<br>  人们会被拥有类似梦想和目标的人吸引<br>  具有类似信息的人能够增强彼此的信念和做正确的事的欲望<br>  例如寓言故事和共鸣等</li>
+<li>社会激励<br>  人们对生活和自身的看法，会受周围人群极大影响<br>  例如尾随战术——混入羊群</li>
+</ul>
+</li>
+<li><p>方法</p>
+<ul>
+<li>提高目标的暗示感受性<br>  极端：睡眠和食物匮乏<br>  缓和：时间紧迫<br>  用恐惧、愤怒或激动等情绪扰乱目标后，可以为他植入不同的信念<br>  这些情绪会导致目标暗示接受性提高和判断力下降<br>  首先给目标一个会另其感到恐惧或激动的暗示<br>  然后提供一个解决方案（植入信念）<br>  制造出一个易于接受暗示的环境</li>
+<li>控制目标的环境<br>  通常用于在线社会工程、欺诈和身份盗用等<br>  控制目标能访问的信息类型和数量<br>  例如获取目标社交网站的访问权</li>
+<li>迫使目标重新评估（制造怀疑）<br>  动摇并深挖目标的信仰系统<br>  逐渐削弱目标的信念、意识或对某一情况的情绪控制会让目标感到不安</li>
+<li>让目标感到无能为力（感觉脆弱）<br>  利用权威，让目标对自己的信念逐步丧失信心</li>
+<li>给予非肉体惩罚（让目标产生强烈的情绪反应）<br>  焦虑、怀疑、罪恶感、耻辱等，让目标丧失特权</li>
+<li>威胁目标<br>  对生理痛苦或其他可怕情形的畏惧让目标在压力下崩溃<br>  利用权威制造强烈的恐惧感或有潜在损失的感觉，让目标感到不自在，忧虑</li>
+</ul>
+</li>
+<li><p>技巧</p>
+<ul>
+<li>不要让目标的表现影响你的情绪<br>  控制情绪，保持冷静</li>
+<li>寻找积极的话题<br>  适当，有涵养，有品位</li>
+<li>假定<br>  假定一切——信心，保持信念</li>
+<li>尝试不同的开头</li>
+<li>使用过去时<br>  将过去负面状态和行为放到回忆中，使人有“重新开始”的感觉</li>
+<li>探讨并摧毁<br>  实现思考如何处理潜在的交流障碍或破坏性影响</li>
+</ul>
+</li>
+</ul>
+<h1 id="非语言交流"><a href="#非语言交流" class="headerlink" title="非语言交流"></a>非语言交流</h1><h2 id="身势学——肢体语言"><a href="#身势学——肢体语言" class="headerlink" title="身势学——肢体语言"></a>身势学——肢体语言</h2><p>对非语言身体动作与交流之间的关系的系统研究</p>
+<ul>
+<li><p>手部语言</p>
+<ul>
+<li>起源<br>  神经系统、生存本能、随文化/阶级/家庭或个人变化</li>
+<li>编码<br>  固有编码<br>  形象编码<br>  行为和含义间的关系——象征</li>
+<li>分类<ul>
+<li>象征性动作<br>  包含了一个或两个词的简单短语的直接穿衣<br>  一个为团体、阶级或亚文化群所熟知的准确含义<br>  经常有意的用来向他人传递特定消息<br>  接收者知道其接收的象征动作是有意为之<br>  发送者对交流负责任</li>
+<li>演示性动作<br>  那些与演讲、措辞、内容、声调变化曲线及响度等实时密切相关的行为<br>  强化所说的话的动作姿态<br>  通常没有准确的语言含义<br>  一般不会在没有对话时使用<br>  只有和说话者使用，收听者不会使用<br>  演示性动作随说话的增加、愤怒、恐惧、焦虑、兴奋而增加<br>  感情投资、厌倦、假装关切、不善说谎的人会停止使用演示性动作<ul>
+<li>发令动作<br>  强调某个特殊的词、短语</li>
+<li>表意动作<br>  速写思路</li>
+<li>指示动作<br>  指向物品、地点或时间</li>
+<li>节律动作<br>  描述事件进行的步调</li>
+<li>空间动作<br>  描述空间关系</li>
+<li>活动动作<br>  描述身体运动或非人类肢体运动</li>
+<li>象形动作<br>  描述涉及的物体</li>
+<li>象征动作<br>  阐明某事或代替一句话/短语</li>
+</ul>
+</li>
+<li>操纵性动作<br>  涉及对身体部位或衣着进行整饰的行为<br>  紧张-&gt;搓手<br>  寻求抚慰-&gt;玩弄首饰、扣子或其他衣着物品<br>  玩弄头发、手或戒指等</li>
+</ul>
+</li>
+<li>高度自信<br>  手心向上，手指伸展有助于建立密切关系，增强积极情感<br>  尖塔形手势<br>  双手背到脑后，手臂伸展开（领地意识）<br>  拇指动作：向上露出拇指<br>  腹部动作（下腹部）-&gt;开放性动作<br>  双手张开露出腹部：邀请<br>  双手并拢，至于腹部：命令/要求<br>  向内曲拢手指：命令、指挥<br>  挽起袖子<br>  女生双手叉腰<br>  生殖器指向：自信、支配欲<br>  勾起拇指放在腰带上或裤兜里</li>
+<li>底自信<br>  揉搓双手：紧张、不适<br>  不停叩响指关节<br>  用手抓、揉或对衣着及身体部位进行操纵性动作<br>  拇指向下<br>  藏起或放低拇指<br>  手部闭合<br>  隐藏、放低双手</li>
+</ul>
+</li>
+<li><p>腿、脚部语言<br>  对抗地心引力的动作姿态（弹跳、摇摆、抬起脚尖）——开心<br>  脚、腿部的朝向——指向想去的地方<br>  扩大双脚站立的距离——感受到威胁（领地意识）<br>  跷二郎腿：朝向喜欢的人/不朝向喜欢的人（设置屏障）</p>
+</li>
+<li><p>躯干和身体语言</p>
+<ul>
+<li>躯干倾斜<br>  人们的躯干无意识会倾斜于他们喜欢的事物，远离他们不喜欢的事物</li>
+<li>胸部的起伏<br>  胸部的起伏和粗重的呼吸：为吸入更多氧气（不适）</li>
+<li>手臂<br>  开放的双臂（腹部）、手臂前端或敏感部位暴露：信任<br>  封闭（交叉）：设置屏障（高于胃部，低于胸部，防御姿态）</li>
+<li>腹部<br>  开放的腹部表示自信、信任</li>
+<li>肩部<br>  耸肩：不确定、不适、不知道，表疑问或否定</li>
+</ul>
+</li>
+<li><p>舒适与不适（操纵性动作）</p>
+<ul>
+<li><p>颈部<br>  当人们在做艰难的决定时，揉搓或抚摸流经颈部（后颈部）和胸上部（胸骨切迹）的两条神经（交感神经和颈动脉窦）能起到安抚作用：紧张、怀疑、害怕、担忧、威胁</p>
+</li>
+<li><p>脸部<br>  揉搓脸部：威胁、不安全、不适、怀疑</p>
+</li>
+<li><p>嘴部<br>  捂嘴：害怕、惊讶、恐惧、震惊、悲伤（自我安慰）</p>
+<blockquote>
+<p>融入群体：自己和周围的人群表相处相同的情绪，寻找或制造一种利用重大事件加入群体的情况</p>
+</blockquote>
+</li>
+<li><p>唇部<br>  双唇紧闭：压抑愤怒，阻止想说的话<br>  双唇撅起：不确定，认知负荷（一般会伴随眉头紧锁），犹豫不决<br>  咬唇（咬手指，嚼东西）：认知负荷，焦虑</p>
+</li>
+<li><p>眼部<br>  罩住眼睛：情绪激动（悲伤、愤怒），阻止视觉刺激</p>
+</li>
+<li><p>头部<br>  倾斜头部：开放，信任（伴随微笑）</p>
+</li>
+<li><p>胸部<br>  双臂交叉环胸：自我安慰（紧张）</p>
+</li>
+</ul>
+</li>
+<li><p>RSVP<br>  节奏Rhythm/语速Speed/音量Volume/音高Pitch<br>  代词的变化（语言风格）<br>  口吃和用词重复的增加（语言风格）——忧虑、压力<br>  声调的变化——情绪<br>  不做正面答复<br>  停顿——认知负荷，通常伴随眼部动作</p>
+</li>
+</ul>
+<hr>
+<h2 id="人际距离学"><a href="#人际距离学" class="headerlink" title="人际距离学"></a>人际距离学</h2><p>对周围空间的使用方式</p>
+<ul>
+<li>公共空间<br>  说话，听众<br>  4～8米</li>
+<li>社交空间<br>  适用于社交场合<br>  1.2～3米</li>
+<li>私人空间<br>  同家人或朋友互动<br>  0.6～1.2米</li>
+<li>亲密空间<br>  可以亲密接触的人<br>  小于0.3米</li>
+</ul>
+<hr>
+<h2 id="触摸"><a href="#触摸" class="headerlink" title="触摸"></a>触摸</h2><p>在交流过程中传递情感，并建立信任感（建立和谐的氛围）</p>
+<hr>
+<h2 id="眼神交流"><a href="#眼神交流" class="headerlink" title="眼神交流"></a>眼神交流</h2><p>观察他人的情绪状态</p>
+<hr>
+<h2 id="嗅觉学"><a href="#嗅觉学" class="headerlink" title="嗅觉学"></a>嗅觉学</h2><p>触发人们对人，事，物的回忆和情感</p>
+<hr>
+<h2 id="着装"><a href="#着装" class="headerlink" title="着装"></a>着装</h2><p>着装认知：服装的象征意义和身体穿着体验的共存</p>
+<hr>
+<h2 id="面部表情"><a href="#面部表情" class="headerlink" title="面部表情"></a>面部表情</h2><blockquote>
+<p>宏表情：2～4秒，有意识，可控<br>微表情：0.04～0.2秒，无意识，不可控</p>
+</blockquote>
+<p>注意：不要将自己的情绪加入到观察的情绪中</p>
+<ul>
+<li><p>热点（Hotspot）<br>  与言行不一致的微表情或其他表现<br>  当发现热点的时候，开始寻找出现热点的原因，不要只关注一种可能性，通过“对立假设”思考热点出现的原因，增加客观性<br>  做一个积极的聆听者和观察者，不要只关注一件事（面部、肢体语言、嗓音、声线、声音内容）<br>  不要急于作出判断，充分利用所有可利用的时间、语言、非语言线索<br>  注意所有出现的热点，但是在跟进、挑战或对峙时要有选择的利用热点<br>  不要假定目标为什么会出现那种情绪，而是通过问题、基准太和访问策略深入研究情绪的成因</p>
+</li>
+<li><p>情绪<br>  一种受人们自己的过去影响的过程和特定的自我评价<br>  大脑基于之前的经历和生物活动而形成的一组心里原则，用来处理当前所遇到的任何情况</p>
+</li>
+</ul>
+<p>七种基本情绪：恐惧，惊讶，悲伤，轻视，厌恶，愤怒，开心</p>
+<ul>
+<li><p>恐惧<br>  恐惧经常被用来诱导目标至特定的反应和动作<br>  也可以将恐惧重定向到其他情绪</p>
+<ul>
+<li>特征<br>  瞪大双眼，挑起眉毛，嘴唇同时向耳朵拉起，上眼皮抬起，露出虹膜上方的眼白</li>
+<li>练习<ol>
+<li>尽量抬高上眼睑，同时尽量收紧下眼睑</li>
+<li>水平咧开嘴巴，嘴唇水平伸展</li>
+<li>在收紧上眼睑的时候抬高眼眉，露出虹膜上方的眼白，头向后仰</li>
+</ol>
+</li>
+<li>或战或逃<br>  因为紧张而倒吸一口气或尖叫，头和身体也向后退，远离害怕的东西</li>
+</ul>
+</li>
+<li><p>惊讶<br>  眼睛比恐惧时更放松，眼眉的拱形和扬起的程度更大，嘴唇垂直拉起而不是水平</p>
+<ul>
+<li>特征<br>  眉毛上扬，下颚张开，双眼睁大，</li>
+<li>练习<ol>
+<li>在扬起眉毛的同时尽量睁大眼睛</li>
+<li>下巴微微分开</li>
+</ol>
+</li>
+<li>通路情绪<br>  使人们先退到一边，意识到安全后再走近让人们意外的东西，身体也会倾向于那个带来惊讶的物品-&gt;开心，微笑</li>
+</ul>
+</li>
+<li><p>悲伤<br>  可能会使用虚假的微笑或坚韧的眼神隐藏悲伤，凝视正前方，面容呆滞<br>  在极度悲伤时嘴巴会张开的更大<br>  营造悲伤的气氛，激发人们采取某些行动——利用同情心</p>
+<ul>
+<li>特征<br>  最佳下列，上眼睑下垂，外嘴角下斜，眉毛内侧上扬，眉头抬起向中间聚拢，双目低垂，嘴角下垂，下唇中心向外突出</li>
+<li>练习<ol>
+<li>嘴角下拉（嘴巴张开或不张开）</li>
+<li>上抬脸颊</li>
+<li>上眼睑下垂，向下看</li>
+<li>头部向下，前颚紧绷</li>
+<li>眼眉内角皱在一起</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>轻视<br>  对那些在道义或社交上逊于自己的个人或群体的情感反应<br>  将轻视的对象排挤出自己的社交团体或阶层<br>  通常会伴随愤怒<br>  当嘴和脸颊的一侧抬起后，往往会产生假笑，点头或仰起头，表现自大</p>
+<ul>
+<li>特征<br>  皱起的鼻子，上启的嘴唇，通常只出现在脸的一侧，眼部不对称，一侧脸颊上抬，嘴部不对称，下巴上抬</li>
+<li>练习<ol>
+<li>扬起一侧的脸，仿佛脸颊挤压导致眯眼</li>
+<li>扬起下巴，为了俯视轻蔑对象</li>
+<li>颊肌抬起，脸部同侧的唇角会产生不对称上扬</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>厌恶<br>  通常伴随愤怒、不满、不安与急躁</p>
+<ul>
+<li>特征<br>  上唇上启，漏出牙齿，鼻子皱成一团，双颊上移</li>
+<li>练习<ol>
+<li>皱鼻（鼻梁）</li>
+<li>嘴唇卷起来，有时也会张开并露出牙齿（上牙）</li>
+<li>脸颊出现大幅褶皱</li>
+<li>眉头紧锁</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>愤怒<br>  愤怒时无法清晰思考（杏仁核劫持）</p>
+<ul>
+<li>特征<br>  紧抿双唇，眉头紧锁，双眼圆瞪</li>
+<li>练习<ol>
+<li>拉低眉毛（有时会皱起来）</li>
+<li>尝试瞪眼</li>
+<li>紧紧挤压嘴唇，咬紧牙齿，收紧下颚</li>
+<li>下巴通常收紧以保护颈部</li>
+<li>呼吸粗重，变得紧张，心跳加快</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>开心</p>
+<ul>
+<li>真诚的微笑（易传染）<br>  颧骨和眼轮匝肌的肌肉分别带动嘴角和脸颊肌肉提起，形成鱼尾纹</li>
+<li>礼貌的微笑（社交微笑）<br>  眼睛没有明显变化</li>
+<li>练习<ol>
+<li>扬起嘴角，抬高脸颊，嘴唇上啦</li>
+<li>不眯眼睛，提高脸颊，将下眼睑上推，形成鱼尾纹</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>利用</p>
+<ul>
+<li>情景诱导<br>  通过情绪上的微妙暗示操纵他人达到特定的情绪状态</li>
+<li>识别欺骗<br>  矛盾：发现矛盾-&gt;继续挖掘更多信息-&gt;询问矛盾点-&gt;观察微表情<br>  犹豫：通过犹豫（或者重复问题）来拖延时间以编造谎言<br>  行为变化：每次谈到特定的话题可能导致某一特定行为的变化<br>  手势：手势幅度、频率、时长的变化</li>
+</ul>
+</li>
+</ul>
+<h1 id="网络钓鱼"><a href="#网络钓鱼" class="headerlink" title="网络钓鱼"></a>网络钓鱼</h1><p>以对收件人施加影响或获得个人信息为目的，发送者看似来自权威来源的电子邮件</p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ul>
+<li>钱</li>
+<li>信息</li>
+<li>政治目的/个人信仰</li>
+</ul>
+<hr>
+<h2 id="手段"><a href="#手段" class="headerlink" title="手段"></a>手段</h2><ul>
+<li>邮件钓鱼</li>
+<li>网站克隆</li>
+<li>电话钓鱼<br>  增加邮件的真实性/直接索取信息</li>
+</ul>
+<hr>
+<h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><ul>
+<li>尼日利亚419骗局（预付款骗局）</li>
+<li>金融类<br>  账户有异常登录请求<br>  银行升级在线安全措施<br>  未按时还款或纳税</li>
+<li>社交媒体</li>
+<li>利用公共事件（杏仁核劫持）<br>  贪婪、恐惧、敬畏权威、渴望交流、好奇、同情</li>
+</ul>
+<hr>
+<h2 id="检测特征"><a href="#检测特征" class="headerlink" title="检测特征"></a>检测特征</h2><ul>
+<li>含糊的称呼/签名</li>
+<li>未知的/令人怀疑的网址链接</li>
+<li>未知的/令人怀疑的发送者</li>
+<li>错别字以及语法，拼写和标点符号错误</li>
+<li>不合情理的借口</li>
+</ul>
+<hr>
+<h2 id="钓鱼攻击分类"><a href="#钓鱼攻击分类" class="headerlink" title="钓鱼攻击分类"></a>钓鱼攻击分类</h2><ul>
+<li><p>一级钓鱼攻击</p>
+<ul>
+<li>非指向性问候和结束语</li>
+<li>拼写错误和糟糕的语法</li>
+<li>简易的信息/不太可能成立的理由</li>
+<li>引起贪婪、恐惧或好奇的心理</li>
+<li>文本中出现恶意链接</li>
+<li>奇怪的邮件地址/未知的发件人</li>
+</ul>
+</li>
+<li><p>二级钓鱼攻击</p>
+<ul>
+<li>非指向性问候和结束语</li>
+<li>拼写正确但是有一些语法问题</li>
+<li>信息更加复杂但仍然很基本</li>
+<li>引起贪婪、恐惧或好奇的心理</li>
+<li>文本中出现恶意链接</li>
+<li>奇怪的邮件地址/未知的发件人</li>
+</ul>
+</li>
+<li><p>三级钓鱼攻击</p>
+<ul>
+<li>指向性问候和结束语</li>
+<li>正确的拼写和不错的语法</li>
+<li>复杂的信息，会引起恐惧或好奇的心理</li>
+<li>文本中出现恶意链接</li>
+<li>有时候会出现奇怪的邮件地址，但是发件人合法</li>
+<li>很多时候会出现商标</li>
+</ul>
+</li>
+<li><p>四级钓鱼攻击</p>
+<ul>
+<li>鱼叉式钓鱼攻击<br>  针对特定目标进行个人定制</li>
+<li>OSINT<br>  Open-source intelligence（获取开放性情报）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="心理学原理"><a href="#心理学原理" class="headerlink" title="心理学原理"></a>心理学原理</h2><ul>
+<li><p>决策</p>
+<ol>
+<li>决策的好坏并不总是与我们对这个决策本身是否感到满意有关</li>
+<li>决策包含了一系列因素，例如我们的看法和情绪</li>
+<li>我们每天都在作出或大或小的决策，即使在并不具备所需要的全部相关信息下</li>
+<li>我们不假思索的，频繁的作出这些或大或小的决策</li>
+</ol>
+</li>
+<li><p>影响因素</p>
+<ul>
+<li>认知偏差<br>  通常源于过去的经验<ul>
+<li>框架效应<br>  反应依赖语境</li>
+<li>可用性启发法<br>  依赖于我们容易想起的事物</li>
+<li>确认偏误<br>  倾向于寻找支持自己观点的信息—偏执</li>
+</ul>
+</li>
+<li>生理状态<br>  饥饿、困倦、疲劳等负面的身体状态</li>
+<li>外部因素<br>  环境、形势的不确定性</li>
+</ul>
+</li>
+<li><p>基础决策模型<br>  定义问题（正确理解问题）-&gt;收集信息-&gt;权衡选择-&gt;作出决策-&gt;评估结果</p>
+</li>
+<li><p>情绪化决策（杏仁核劫持）<br>  基于情绪的钓鱼攻击-&gt;引起大脑和身体反应-&gt;情绪战胜逻辑-&gt;缺乏理性导致错误决策-&gt;产生情绪化行为</p>
+</li>
+<li><p>影响与操控<br>  决策的催化剂</p>
+</li>
+</ul>
+<hr>
+<h2 id="保护与绕过"><a href="#保护与绕过" class="headerlink" title="保护与绕过"></a>保护与绕过</h2><ul>
+<li><p>批判性思维<br>  告诉自己不要事都信以为真<br>  绕过：利用情绪阻止批判性思维-&gt;杏仁核劫持</p>
+</li>
+<li><p>悬停<br>  把鼠标悬停在连接上<br>  绕过：购买看似合法的域名</p>
+</li>
+<li><p>URL解析<br>  绕过：购买看似合法的域名</p>
+</li>
+<li><p>分析邮件头<br>  绕过：对网络进行渗透，获取SMTP服务器</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>邮件头</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>To</td>
+<td>发送至</td>
+</tr>
+<tr>
+<td>Reply-To</td>
+<td>回复至</td>
+</tr>
+<tr>
+<td>Delivered-To</td>
+<td>已发送至</td>
+</tr>
+<tr>
+<td>X-Received</td>
+<td>邮件来源</td>
+</tr>
+<tr>
+<td>Return-Path</td>
+<td>返回路径</td>
+</tr>
+<tr>
+<td>Received-Spf</td>
+<td>发件人SPF</td>
+</tr>
+<tr>
+<td>Authentication-Results</td>
+<td>身份认证结果</td>
+</tr>
+<tr>
+<td>Dkim-Signature</td>
+<td>DKIM签名</td>
+</tr>
+<tr>
+<td>Domainkey-Signature</td>
+<td>域名密钥签名</td>
+</tr>
+<tr>
+<td>Message-Id</td>
+<td>信息编号</td>
+</tr>
+<tr>
+<td>List-Unsubscribe</td>
+<td>退订信息</td>
+</tr>
+<tr>
+<td>Mime-Version</td>
+<td>MIME版本</td>
+</tr>
+<tr>
+<td>Content-Type</td>
+<td>内容类型</td>
+</tr>
+</tbody></table>
+<ul>
+<li>沙盒<br>  创建一个可以运行未经检测或不受信任的代码的环境</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SocialEngineering/" rel="tag"># SocialEngineering</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/01/27/%E9%92%88%E5%AF%B9%E6%9F%90%E4%B8%89%E6%B5%81%E5%AE%89%E5%85%A8%E5%85%AC%E5%8F%B8%E7%9A%84%E6%B8%97%E9%80%8F/" rel="prev" title="针对某三流安全公司的渗透">
+      <i class="fa fa-chevron-left"></i> 针对某三流安全公司的渗透
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/25/V2Ray%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" rel="next" title="V2Ray搭建记录">
+      V2Ray搭建记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#信息收集"><span class="nav-number">1.</span> <span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Google-Hacking"><span class="nav-number">1.1.</span> <span class="nav-text">Google Hacking</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shodan"><span class="nav-number">1.2.</span> <span class="nav-text">Shodan</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Whois"><span class="nav-number">1.3.</span> <span class="nav-text">Whois</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WayBack-Machine"><span class="nav-number">1.4.</span> <span class="nav-text">WayBack Machine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公共服务器"><span class="nav-number">1.5.</span> <span class="nav-text">公共服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个人网站-博客"><span class="nav-number">1.6.</span> <span class="nav-text">个人网站&#x2F;博客</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公开报告"><span class="nav-number">1.7.</span> <span class="nav-text">公开报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#社交平台"><span class="nav-number">1.8.</span> <span class="nav-text">社交平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#观察"><span class="nav-number">1.9.</span> <span class="nav-text">观察</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾收集"><span class="nav-number">1.10.</span> <span class="nav-text">垃圾收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交流"><span class="nav-number">1.11.</span> <span class="nav-text">交流</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#诱导"><span class="nav-number">2.</span> <span class="nav-text">诱导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原因"><span class="nav-number">2.1.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前提"><span class="nav-number">2.2.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#铺垫"><span class="nav-number">2.3.</span> <span class="nav-text">铺垫</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要点"><span class="nav-number">2.4.</span> <span class="nav-text">要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法"><span class="nav-number">2.5.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提问的技术"><span class="nav-number">2.6.</span> <span class="nav-text">提问的技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立密切关系"><span class="nav-number">2.7.</span> <span class="nav-text">建立密切关系</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#伪装"><span class="nav-number">3.</span> <span class="nav-text">伪装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#社会工程心理学"><span class="nav-number">4.</span> <span class="nav-text">社会工程心理学</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#思维模式"><span class="nav-number">4.1.</span> <span class="nav-text">思维模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神经语言程序学-NLP"><span class="nav-number">4.2.</span> <span class="nav-text">神经语言程序学(NLP)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思维缓冲溢出"><span class="nav-number">4.3.</span> <span class="nav-text">思维缓冲溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手势"><span class="nav-number">4.4.</span> <span class="nav-text">手势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聆听"><span class="nav-number">4.5.</span> <span class="nav-text">聆听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共识"><span class="nav-number">4.6.</span> <span class="nav-text">共识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#杏仁核劫持"><span class="nav-number">4.7.</span> <span class="nav-text">杏仁核劫持</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#询问与审讯"><span class="nav-number">5.</span> <span class="nav-text">询问与审讯</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#影响与操纵"><span class="nav-number">6.</span> <span class="nav-text">影响与操纵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操纵"><span class="nav-number">6.1.</span> <span class="nav-text">操纵</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非语言交流"><span class="nav-number">7.</span> <span class="nav-text">非语言交流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#身势学——肢体语言"><span class="nav-number">7.1.</span> <span class="nav-text">身势学——肢体语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#人际距离学"><span class="nav-number">7.2.</span> <span class="nav-text">人际距离学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#触摸"><span class="nav-number">7.3.</span> <span class="nav-text">触摸</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#眼神交流"><span class="nav-number">7.4.</span> <span class="nav-text">眼神交流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嗅觉学"><span class="nav-number">7.5.</span> <span class="nav-text">嗅觉学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#着装"><span class="nav-number">7.6.</span> <span class="nav-text">着装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面部表情"><span class="nav-number">7.7.</span> <span class="nav-text">面部表情</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络钓鱼"><span class="nav-number">8.</span> <span class="nav-text">网络钓鱼</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">8.1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手段"><span class="nav-number">8.2.</span> <span class="nav-text">手段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主题"><span class="nav-number">8.3.</span> <span class="nav-text">主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检测特征"><span class="nav-number">8.4.</span> <span class="nav-text">检测特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#钓鱼攻击分类"><span class="nav-number">8.5.</span> <span class="nav-text">钓鱼攻击分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#心理学原理"><span class="nav-number">8.6.</span> <span class="nav-text">心理学原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保护与绕过"><span class="nav-number">8.7.</span> <span class="nav-text">保护与绕过</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Srpopty</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Srpopty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Srpopty" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:srpopty@outlook.com" title="E-Mail → mailto:srpopty@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Srpopty</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb9b672afa74e328fbe8',
+      clientSecret: '7b3efe103d7e694008b943a67e5273ad36ee14a0',
+      repo        : 'srpopty.github.io',
+      owner       : 'Srpopty',
+      admin       : ['Srpopty'],
+      id          : '292072240cf3ff32d91b66bd20531112',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>

