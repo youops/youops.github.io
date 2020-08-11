@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"srpopty.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Install Kali Linux on Raspberry Pi 3B+.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派安装Kali记录">
+<meta property="og:url" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Shadow Gallery">
+<meta property="og:description" content="Install Kali Linux on Raspberry Pi 3B+.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601152842.jpg">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/raspberrypi-version-compare.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601134357.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601161329.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601161547.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601165426.jpg">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601165422.jpg">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601165031.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601195845.png">
+<meta property="og:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601212255.png">
+<meta property="article:published_time" content="2018-06-02T15:25:38.000Z">
+<meta property="article:modified_time" content="2020-08-11T08:55:24.734Z">
+<meta property="article:author" content="Srpopty">
+<meta property="article:tag" content="RaspberryPi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601152842.jpg">
+
+<link rel="canonical" href="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>树莓派安装Kali记录 | Shadow Gallery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Shadow Gallery" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shadow Gallery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Live in the shadow</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Srpopty">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shadow Gallery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          树莓派安装Kali记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2018-06-02 23:25:38" itemprop="dateCreated datePublished" datetime="2018-06-02T23:25:38+08:00">2018-06-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-11 16:55:24" itemprop="dateModified" datetime="2020-08-11T16:55:24+08:00">2020-08-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Geek/" itemprop="url" rel="index"><span itemprop="name">Geek</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Install Kali Linux on Raspberry Pi 3B+.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="树莓派"><a href="#树莓派" class="headerlink" title="树莓派"></a>树莓派</h1><p>昨天晚上鄙人在树莓派的kali里在安装某IDE的时候死机了，只能断电重启，再开机的时候更新时出现了”Structure Needs Cleaning”错误，找了很多办法没有解决，嫌麻烦，不如重新安装一下树莓派kali系统，顺便记录下安装过程。</p>
+<p>鄙人使用的是树莓派3B+，用了半年，总得来说感觉还不错，运行kali桌面版还是很流畅的，就是内存有点小，msf这类的重武器有时候会因为内存不够而崩溃，配上了一个外壳，小触控屏，小键盘，可以随身携带，充电宝就能供电，某品牌1w毫安充电宝一格电能用一下午，用来无线渗透效果最好，当然nmap扫一扫也行，用来爆破的话效率很低，不过休闲的时候当个pad看看电影什么的也挺不错。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601152842.jpg" alt></p>
+<p>树莓派各版本配置如下(图片来源<a href="http://shumeipai.nxez.com/" target="_blank" rel="noopener">树莓派实验室</a>)<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/raspberrypi-version-compare.png" alt></p>
+<hr>
+<h1 id="一张SD卡"><a href="#一张SD卡" class="headerlink" title="一张SD卡"></a>一张SD卡</h1><ol>
+<li><p>首先需要准备一张SD卡，不用太大，经济版16G，高配版32G，按需选择即可，如果想在树莓派中存一些大字典可以考虑64G或128G。</p>
+</li>
+<li><p>使用<a href="https://www.sdcard.org/downloads/formatter_4/index.html" target="_blank" rel="noopener">SDCardFormatter</a>格式化SD卡，格式化的时候选择快速格式化即可。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601134357.png" alt></p>
+</li>
+</ol>
+<hr>
+<h1 id="树莓派的kali系统"><a href="#树莓派的kali系统" class="headerlink" title="树莓派的kali系统"></a>树莓派的kali系统</h1><ol>
+<li>下载<a href="https://www.offensive-security.com/kali-linux-arm-images/" target="_blank" rel="noopener">kali的树莓派版本</a>，选择<strong>Kali Linux RaspberryPi 2 and 3</strong><br>，Kali Linux Rpi0w Nexmon 是为树莓派zero提供的，以及 Kali Linux RaspberryPi w/TFT 是为触屏提供的，这两个版本在本文中不涉及。</li>
+</ol>
+<ol start="2">
+<li>下载完成后会得到”.img.xz”后缀的文件，解压即可，有人说不解压也可以直接烧录进SD卡，但是鄙人并没有成功，为了保险起见还是解压之后在烧录。</li>
+</ol>
+<ol start="3">
+<li>把SD卡插入电脑（使用读卡器），再使用Win32DiskImager将kali镜像烧录到SD卡中，会弹出一个确认框，警告会擦除SD卡中所有数据，直接点击确定。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601161329.png" alt></li>
+</ol>
+<ol start="4">
+<li>烧录过程可能会有点慢，左下角可以看到烧录速度，大概需要十分钟到十五分钟，烧录速度具体取决于不同电脑，尽量不要在烧录的时候操作电脑，否则会拖慢烧录速度。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601161547.png" alt></li>
+</ol>
+<ol start="5">
+<li>烧录完成后Windows会弹出一个框，要格式化这张卡，不用管直接关掉，拔出SD卡，理论上此时你的SD卡应该会很烫，建议稍微降降温等一会再插入树莓派中。</li>
+</ol>
+<hr>
+<h1 id="在树莓派上安装Kali"><a href="#在树莓派上安装Kali" class="headerlink" title="在树莓派上安装Kali"></a>在树莓派上安装Kali</h1><ol>
+<li>刚才已经烧录完了kali系统，现在把SD卡插到树莓派中，启动电源，会自动安装系统，此时会看到树莓派上的绿灯在疯狂闪，这就代表树莓派正在对SD卡读写，<strong>注意在树莓派的绿灯有闪动的时候千万不要断电！:)</strong></li>
+</ol>
+<ol start="2">
+<li>安装时最好能有个屏幕，否则安装结束后登录kali会很麻烦，鄙人不才，暂时没有无屏幕安装kali的办法，Kali不同于raspbian，虽然它们默认都没有启用ssh，但是raspbian可以手动在SD卡中放入一个名为SSH的文件来启用ssh，安装系统成功之后直接ssh登录进去就可以，不需要屏幕，但是鄙人曾经在kali上用这种方法测试了一下午都没成功，所以安装kali时最好用一个屏幕，之后在系统内配置ssh，后文会讲。</li>
+</ol>
+<ol start="3">
+<li>当你看到下面这个界面的时候就代表正在进行安装，如果一直是黑屏的话检查一下绿灯有没有闪，没有的话检查下前面的步骤或者检查下SD卡有没有问题，再不行的话可能就是树莓派的问题了。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601165426.jpg" alt></li>
+</ol>
+<ol start="4">
+<li>安装成功后默认用户名密码登录即可，默认的用户名是root，密码是toor。</li>
+</ol>
+<hr>
+<h1 id="开启SSH"><a href="#开启SSH" class="headerlink" title="开启SSH"></a>开启SSH</h1><ol>
+<li>第一次登录成功后会让你选择xface的配置，选择默认配置即可，否则你会发现登录后的桌面空空如也，什么也没有，登录后的界面如下图，最好先连接Wifi，否则后面的有些配置会无法进行。<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E5%9B%BE%E7%89%8720180601165422.jpg" alt></li>
+</ol>
+<ol start="2">
+<li>首先要打开ssh，打开终端输入。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg-reconfigure openssh-server</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>之后一定要记得修改密码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
+
+<p>这时可以用ssh连接尝试一下，主机和树莓派最好在同一个内网里，连接可以用有线或无线连接，任意选择一种即可。</p>
+<ul>
+<li>有线连接<br>  将网线与树莓派相连，共享无线网络，具体操作如下图所示，打开cmd，输入arp -a查看arp记录，找到树莓派的mac地址，即可找到树莓派的ip地址，ssh连接即可，断开连接后记得关闭共享无线网络。<br>  <img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601165031.png" alt></li>
+<li>无线连接<br>  主机于树莓派同时连接到一个内网，或者主机打开热点树莓派连接。</li>
+</ul>
+<hr>
+<h1 id="安装树莓派的配置软件raspi-config以及树莓派的其他配置"><a href="#安装树莓派的配置软件raspi-config以及树莓派的其他配置" class="headerlink" title="安装树莓派的配置软件raspi-config以及树莓派的其他配置"></a>安装树莓派的配置软件raspi-config以及树莓派的其他配置</h1><ol>
+<li>连接到树莓派以后可以先稍稍美化一下终端，修改.bushrc文件，可以将终端的风格改为标准的Kali风格，鄙人的bushrc文件如下。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># System-wide .bashrc file for interactive bash(1) shells.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To enable the settings / commands in this file for login shells as well,</span></span><br><span class="line"><span class="comment"># this file has to be sourced in /etc/profile.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># If not running interactively, don't do anything</span></span><br><span class="line">[ -z <span class="string">"<span class="variable">$PS1</span>"</span> ] &amp;&amp; <span class="built_in">return</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># check the window size after each command and, if necessary,</span></span><br><span class="line"><span class="comment"># update the values of LINES and COLUMNS.</span></span><br><span class="line"><span class="built_in">shopt</span> -s checkwinsize</span><br><span class="line"></span><br><span class="line"><span class="comment"># set variable identifying the chroot you work in (used in the prompt below)</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$&#123;debian_chroot:-&#125;</span>"</span> ] &amp;&amp; [ -r /etc/debian_chroot ]; <span class="keyword">then</span></span><br><span class="line">    debian_chroot=$(cat /etc/debian_chroot)</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># set a fancy prompt (non-color, overwrite the one in /etc/profile)</span></span><br><span class="line"><span class="comment"># PS1='$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ '</span></span><br><span class="line"><span class="comment"># PS1='\[\e]0;\u@\h: \w\a\]\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ '</span></span><br><span class="line"><span class="comment"># PS1='\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$'</span></span><br><span class="line">PS1=<span class="string">'\[\033[38;5;196m\]\u@\h\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;33m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]'</span></span><br><span class="line"><span class="comment"># PS1='\[\033[38;5;196m\]\u@\h\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;33m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]'</span></span><br><span class="line"><span class="comment"># PS1='\[\033[38;5;196m\]\u@\h\[$(tput sgr0)\]\[\033[38;5;15m\]:[\[$(tput sgr0)\]\[\033[38;5;87m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]]\\$\[$(tput sgr0)\]'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.</span></span><br><span class="line"><span class="comment"># If this is an xterm set the title to user@host:dir</span></span><br><span class="line"><span class="comment">#case "$TERM" in</span></span><br><span class="line"><span class="comment">#xterm*|rxvt*)</span></span><br><span class="line"><span class="comment">#    PROMPT_COMMAND='echo -ne "\033]0;$&#123;USER&#125;@$&#123;HOSTNAME&#125;: $&#123;PWD&#125;\007"'</span></span><br><span class="line"><span class="comment">#    ;;</span></span><br><span class="line"><span class="comment">#*)</span></span><br><span class="line"><span class="comment">#    ;;</span></span><br><span class="line"><span class="comment">#esac</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># enable bash completion in interactive shells</span></span><br><span class="line"><span class="keyword">if</span> ! <span class="built_in">shopt</span> -oq posix; <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">if</span> [ -f /usr/share/bash-completion/bash_completion ]; <span class="keyword">then</span></span><br><span class="line">    . /usr/share/bash-completion/bash_completion</span><br><span class="line">  <span class="keyword">elif</span> [ -f /etc/bash_completion ]; <span class="keyword">then</span></span><br><span class="line">    . /etc/bash_completion</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># if the command-not-found package is installed, use it</span></span><br><span class="line"><span class="keyword">if</span> [ -x /usr/lib/<span class="built_in">command</span>-not-found -o -x /usr/share/<span class="built_in">command</span>-not-found/<span class="built_in">command</span>-not-found ]; <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">function</span> command_not_found_handle &#123;</span><br><span class="line">            <span class="comment"># check because c-n-f could've been removed in the meantime</span></span><br><span class="line">                <span class="keyword">if</span> [ -x /usr/lib/<span class="built_in">command</span>-not-found ]; <span class="keyword">then</span></span><br><span class="line">           /usr/lib/<span class="built_in">command</span>-not-found -- <span class="string">"<span class="variable">$1</span>"</span></span><br><span class="line">                   <span class="built_in">return</span> $?</span><br><span class="line">                <span class="keyword">elif</span> [ -x /usr/share/<span class="built_in">command</span>-not-found/<span class="built_in">command</span>-not-found ]; <span class="keyword">then</span></span><br><span class="line">           /usr/share/<span class="built_in">command</span>-not-found/<span class="built_in">command</span>-not-found -- <span class="string">"<span class="variable">$1</span>"</span></span><br><span class="line">                   <span class="built_in">return</span> $?</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">           <span class="built_in">printf</span> <span class="string">"%s: command not found\n"</span> <span class="string">"<span class="variable">$1</span>"</span> &gt;&amp;2</span><br><span class="line">           <span class="built_in">return</span> 127</span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>效果如下<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601195845.png" alt></p>
+<ol start="2">
+<li><p>安装raspi-config</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get upgrade -y</span><br><span class="line">apt-get dist-upgrade -y</span><br><span class="line">apt autoremove</span><br><span class="line">apt-get autoclean</span><br><span class="line">wget http://archive.raspberrypi.org/debian/pool/main/r/raspi-config/raspi-config_20180406+1_all.deb</span><br><span class="line">apt-get install -y triggerhappy lua5.1 alsa-utils psmisc</span><br><span class="line">dpkg -i raspi-config_20180406+1_all.deb</span><br><span class="line">rm raspi-config_20180406+1_all.deb</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用raspi-config配置树莓派<br>配置里没什么特别的，懂英文的应该都明白，比较重要的一项配置就是扩展文件系统，最开始kali并不会占用整个SD卡，只有在扩展完文件系统后才能使用全部的空间<br><img src="/2018/06/02/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85Kali%E8%AE%B0%E5%BD%95/TIM%E6%88%AA%E5%9B%BE20180601212255.png" alt><br>翻译如下（鄙人根据理解和注释翻译，如有错误欢迎指正）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Change User Password —— 更改用户名和密码</span><br><span class="line">Network Options —— 网络选项</span><br><span class="line">    Hostname —— 更改主机名</span><br><span class="line">    Wi-fi —— 更改SSID的名称和密码</span><br><span class="line">    Network interface names —— 更改网络接口的名称</span><br><span class="line">Boot Options —— 启动选项</span><br><span class="line">    Desktop &#x2F; CLI —— 决定启动后进入终端还是进入桌面（建议不要更改）</span><br><span class="line">    Wait for Network at Boot —— 决定是否在启动时等待网络连接（建议不要开启，否则启动时会等好久，一直等到网络连接成功或者超时才启动）</span><br><span class="line">    Splash Screen —— 选择启动时是画面或文本</span><br><span class="line">Localisation Options —— 地区选项</span><br><span class="line">    Change Locale —— 更改地区</span><br><span class="line">    Change Timezone —— 更改时区</span><br><span class="line">    Change Keyboard Layout —— 更改键盘布局</span><br><span class="line">    Change Wi-fi Country —— 配置所在国家的wifi频道（可能不同的国家使用的channel不一样吧）</span><br><span class="line">Interfacing Options —— 接口选项</span><br><span class="line">    Camera —— 是否启用相机</span><br><span class="line">    SSH —— 是否启用ssh（远程命令行连接）</span><br><span class="line">    VNC —— 是否启用vnc（远程图像连接）</span><br><span class="line">    SPI —— 是否自动加载SPI内核模块</span><br><span class="line">    I2C —— 是否自动加载I2C内核模块</span><br><span class="line">    Serial —— 是否串行连接内核和shell的消息</span><br><span class="line">    1-Wire —— 是否启用one-wire接口</span><br><span class="line">Remote GPIO —— 是否启用远程访问GPIO引脚</span><br><span class="line">Overclock —— 是否超频</span><br><span class="line">Advanced Options —— 高级选项</span><br><span class="line">    Expand Filesystem —— 扩展文件系统（很重要，最好第一次配置的时候先选择这个）</span><br><span class="line">    Overscan —— 是否启用Overscan（就是当屏幕上有黑条闪过的时候需要启动这个）</span><br><span class="line">    Memory Split —— 更改用于GPU的内存量</span><br><span class="line">    Audio —— 强制音频通过HDMI或3.5mm插孔输出</span><br><span class="line">    Resolution —— 设置特定的屏幕分辨率</span><br><span class="line">    Pixel Doubling —— 是否启用像素倍增</span><br><span class="line">    GL Driver —— 是否启动实验桌面GL驱动程序</span><br><span class="line">Update —— 更新raspi-config</span><br><span class="line">About raspi-config —- 关于raspi-config</span><br></pre></td></tr></table></figure>
+<p>配置完成后需要重启一次，配置过分辨率之后你就会发现你的树莓派启动看起来更加漂亮了！</p>
+</li>
+</ol>
+<ul>
+<li>到这里树莓派Kali的安装基本就完成了，剩下的就需要按照个人喜好去个性化的设置自己的kali了。建议在配置好树莓派后备份一下系统，鄙人就是因为当时没有备份系统而只能重装:)</li>
+<li>备份系统的过程和烧录的过程是相似的，只不过在用Win32DiskImager选择的适合不是选择write而是选择read，备份后会生成一个img文件，想恢复备份的话直接将SD卡用SD card formatter清空在烧录即可，过程和上文中一样。注意备份的话是将整个SD卡备份，也就是说鄙人32G的内存卡（理想情况没有内存损失），备份后的img文件也是32G的，不管里面装了多少软件。</li>
+<li>另外树莓派kali默认是不安装什么工具的，所以需要自己安装，后文将会介绍鄙人在这之后对树莓派kali的配置，如果感兴趣可以接着往下看。</li>
+</ul>
+<hr>
+<h1 id="安装常用软件"><a href="#安装常用软件" class="headerlink" title="安装常用软件"></a>安装常用软件</h1><p>以下是鄙人安装的一些常用软件，有日常工具，如文本编辑图，图片查看器等等，也有一些渗透工具，还有一些系统的辅助工具，比如命令行补全增强等等</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt -y --fix-broken install</span><br><span class="line">apt-get -y upgrade</span><br><span class="line">apt-get -y dist-upgrade</span><br><span class="line">apt-get -y install vim tree leafpad bash-completion wine macchanger cewl crunch curl tcpdump ettercap-graphical metasploit-framework beef-xss <span class="built_in">set</span> netcat dsniff driftnet ssldump fping polipo ngrep proxychains burpsuite nbtscan shadowsocks python-pip python3-pip whatweb sslstrip httrack wpscan gdb weevely cupp</span><br><span class="line">apt autoremove</span><br><span class="line">apt-get clean</span><br><span class="line">apt-get autoclean</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="中文支持以及输入法"><a href="#中文支持以及输入法" class="headerlink" title="中文支持以及输入法"></a>中文支持以及输入法</h1><p>没有中文支持的话显示中文就会是乱码（打开浏览器会发现中文全是像麻将一样的方块），而且搜索的时候也很不方便，于是安装一下中文支持</p>
+<ol>
+<li><p>中文显示支持</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install fonts-wqy-zenhei</span><br></pre></td></tr></table></figure>
+<p>重启之后就可以正常显示中文了</p>
+</li>
+<li><p>中文输入法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install scim-pinyin</span><br></pre></td></tr></table></figure>
+<p>安装完成后命令行输入scim就可以打开输入法了，建议把scim加入开机启动命令的列表里</p>
+</li>
+</ol>
+<hr>
+<h1 id="去外面的世界看看"><a href="#去外面的世界看看" class="headerlink" title="去外面的世界看看"></a>去外面的世界看看</h1><p>shadowsocks安装完成后开始配置番羽土啬<br>鄙人的shadowsocks.json如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"server"</span>: <span class="string">"xxxxxxx"</span>,</span><br><span class="line">    <span class="attr">"server_port"</span>: xxxxx,</span><br><span class="line">    <span class="attr">"local_address"</span>: <span class="string">"127.0.0.1"</span>,</span><br><span class="line">    <span class="attr">"local_port"</span>: <span class="number">1080</span>,</span><br><span class="line">    <span class="attr">"password"</span>: <span class="string">"xxxxxx"</span>,</span><br><span class="line">    <span class="attr">"timeout"</span>: <span class="number">600</span>,</span><br><span class="line">    <span class="attr">"method"</span>: <span class="string">"aes-256-cfb"</span>,</span><br><span class="line">    <span class="attr">"fast_open"</span>: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动shadowsockets</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sslocal -c /root/shadowsocks.json -d start <span class="comment"># 建议把这个放在开机启动的命令里</span></span><br><span class="line">curl ip.sb</span><br><span class="line">curl --socks5 127.0.0.1:1080 ip.sb</span><br></pre></td></tr></table></figure>
+
+<p>在上面鄙人安装的软件中有polipo，用这个来将Sock5代理转换为http代理，之后实现命令行番羽土啬<br>修改/etc/polipo/config</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This file only needs to list configuration variables that deviate</span></span><br><span class="line"><span class="comment"># from the default values.  See /usr/share/doc/polipo/examples/config.sample</span></span><br><span class="line"><span class="comment"># and "polipo -v" for variables you can tweak and further information.</span></span><br><span class="line"></span><br><span class="line">logSyslog = <span class="literal">true</span></span><br><span class="line">logFile = /var/<span class="built_in">log</span>/polipo/polipo.log</span><br><span class="line"></span><br><span class="line">proxyAddress = <span class="string">"0.0.0.0"</span></span><br><span class="line"></span><br><span class="line">socksParentProxy = <span class="string">"127.0.0.1:1080"</span></span><br><span class="line">socksProxyType = socks5</span><br><span class="line">proxyPort = 8123</span><br><span class="line"></span><br><span class="line">chunkHighMark = 50331648</span><br><span class="line">objectHighMark = 16384</span><br><span class="line"></span><br><span class="line">serverMaxSlots = 64</span><br><span class="line">serverSlots = 16</span><br><span class="line">serverSlots1 = 32</span><br></pre></td></tr></table></figure>
+
+<p>启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/polipo restart</span><br><span class="line">curl ip.sb</span><br><span class="line"><span class="built_in">export</span> http_proxy=http://127.0.0.1:8123 <span class="comment"># 启动代理</span></span><br><span class="line">curl ip.sb</span><br><span class="line"><span class="built_in">unset</span> http_proxy <span class="comment"># 取消代理</span></span><br><span class="line">curl ip.sb</span><br></pre></td></tr></table></figure>
+<p>安装Firefox proxy，之后就可以畅游外面的世界了</p>
+<hr>
+<h1 id="安装peda"><a href="#安装peda" class="headerlink" title="安装peda"></a>安装peda</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/longld/peda.git  ~/peda</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"source ~/peda/peda.py"</span> &gt;&gt; ~/.gdbinit</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RaspberryPi/" rel="tag"># RaspberryPi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/03/Who-I-am-What%E2%80%99s-real-What%E2%80%99s-the-truth/" rel="next" title="Who I am? What’s real? What’s the truth?">
+      Who I am? What’s real? What’s the truth? <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派"><span class="nav-number">1.</span> <span class="nav-text">树莓派</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一张SD卡"><span class="nav-number">2.</span> <span class="nav-text">一张SD卡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派的kali系统"><span class="nav-number">3.</span> <span class="nav-text">树莓派的kali系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在树莓派上安装Kali"><span class="nav-number">4.</span> <span class="nav-text">在树莓派上安装Kali</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开启SSH"><span class="nav-number">5.</span> <span class="nav-text">开启SSH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装树莓派的配置软件raspi-config以及树莓派的其他配置"><span class="nav-number">6.</span> <span class="nav-text">安装树莓派的配置软件raspi-config以及树莓派的其他配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装常用软件"><span class="nav-number">7.</span> <span class="nav-text">安装常用软件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#中文支持以及输入法"><span class="nav-number">8.</span> <span class="nav-text">中文支持以及输入法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#去外面的世界看看"><span class="nav-number">9.</span> <span class="nav-text">去外面的世界看看</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装peda"><span class="nav-number">10.</span> <span class="nav-text">安装peda</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Srpopty</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Srpopty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Srpopty" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:srpopty@outlook.com" title="E-Mail → mailto:srpopty@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Srpopty</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'fb9b672afa74e328fbe8',
+      clientSecret: '7b3efe103d7e694008b943a67e5273ad36ee14a0',
+      repo        : 'srpopty.github.io',
+      owner       : 'Srpopty',
+      admin       : ['Srpopty'],
+      id          : '8d5a860d8df7805397d6cdf6c6e44432',
+        language: 'en',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
