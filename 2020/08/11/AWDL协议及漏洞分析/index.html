@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://srpopty.github.io/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/ui.jpg">
 <meta property="og:image" content="https://srpopty.github.io/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/mitm.jpg">
 <meta property="article:published_time" content="2020-08-11T06:54:10.000Z">
-<meta property="article:modified_time" content="2020-08-11T08:56:57.722Z">
+<meta property="article:modified_time" content="2020-08-13T09:40:05.736Z">
 <meta property="article:author" content="Srpopty">
 <meta property="article:tag" content="Wireless">
 <meta name="twitter:card" content="summary">
@@ -198,10 +198,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-08-11 14:54:10 / Modified: 16:56:57" itemprop="dateCreated datePublished" datetime="2020-08-11T14:54:10+08:00">2020-08-11</time>
+              <time title="Created: 2020-08-11 14:54:10" itemprop="dateCreated datePublished" datetime="2020-08-11T14:54:10+08:00">2020-08-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-13 17:40:05" itemprop="dateModified" datetime="2020-08-13T17:40:05+08:00">2020-08-13</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -410,9 +416,9 @@
 <p>当两个不同的集群相互接近时，AWDL会对这两个集群进行合并，由于所有的节点都使用Election Parameters TLV广播主指标，当一个集群中的主节点发现另一个集群的主节点发送的主指标时，主指标更高的主节点将会成为集群合并后的主节点。</p>
 <p>当主节点离开集群后，由于主节点不会再继续主动发送动作帧以保持集群同步，因此其他节点会经过一定的超时时间后（96个可用窗口时间，大约1.5秒）检测到丢失主节点，这时集群会进行重新选举，另一个节点将会取代原来的主节点，由于该节点已经与原来的主节点同步过，所以整个其他从节点无需再次同步，只需修改自己帧里面的主节点地址即可，可以实现主节点离群后重新选举的无缝衔接。</p>
 <h3 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h3><p>在选举出主节点的集群中，每一个从节点都将与主节点进行时间同步。AWDL中存在可用窗口作为时间同步的最小划分。可用窗口(Availability Window, AW)表示设备可以进行通信的一段固定时间，AWDL协议基于单位时间(Time Unit, TU)计时，1TU=1024 μs，而每一个AW的时长为16TU，该值使用Synchronization Parameters TLV进行传递。为了降低性能功耗，节点不会监听每一个AW，而是以4个窗口为一个监听周期，第一个窗口为AW，后三个窗口被称为扩展窗口(Extension Window，EW)，EW的长度与AW相同。在AWDL中允许在一个周期中配置不同数量的EW，但是原论文作者在逆向时发现该值恒为3。因此一个节点的最小监听周期为4个连续的AW/EW，称为扩展可用窗口(Extended Availability Window, EAW)，即<code>1 EAW = AW + 3EW = 64 TU</code>。</p>
-<p>为了进行同步，主节点需要在每个同步动作帧中宣布主节点下一个可用窗口的起始，主节点在动作帧里包含当前的AW或EW的序列号$i (0&lt;=i&lt;2^16)$，以及当前AW(或EW)到下一个EAW的单位时间TU的数量$t_AW$，如下图所示，在第40个AW结束，第41个EW开始时主节点发送同步动作帧，这时当前AW/EW的序列号为41，距离下一个EAW开始还需要<code>3*16=48 TU</code>。</p>
+<p>为了进行同步，主节点需要在每个同步动作帧中宣布主节点下一个可用窗口的起始，主节点在动作帧里包含当前的AW或EW的序列号$i (0&lt;=i&lt;2^16)$，以及当前AW(或EW)到下一个EAW的单位时间TU的数量$t_(AW)$，如下图所示，在第40个AW结束，第41个EW开始时主节点发送同步动作帧，这时当前AW/EW的序列号为41，距离下一个EAW开始还需要<code>3*16=48 TU</code>。</p>
 <p><img src="/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/eaw.jpg" alt></p>
-<p>同步的目的就是使集群中所有的从节点都采用和主节点一样的时间进度，主节点距离下一个EAW还需要多少时间，所有从节点也需要知道这个时间才能达到同步，因此当一个从节点在$T_Rx$时间收到来自主节点的同步帧后，计算当前时间点到下一个主节点AW的时间间隔$T_AW$的公式如下，在该公式中$t_air$代表使用WiFi在空气中的传输时间，在实际计算时该值会被忽略，在近距离传播的环境下误差大概为3 ms。<br>$$T_AW=t_AW*1024-(T_TxPhy-T_TxTarget)+t_air+T_Rx$$</p>
+<p>同步的目的就是使集群中所有的从节点都采用和主节点一样的时间进度，主节点距离下一个EAW还需要多少时间，所有从节点也需要知道这个时间才能达到同步，因此当一个从节点在$T_(Rx)$时间收到来自主节点的同步帧后，计算当前时间点到下一个主节点AW的时间间隔$T_(AW)$的公式如下，在该公式中$t_(air)$代表使用WiFi在空气中的传输时间，在实际计算时该值会被忽略，在近距离传播的环境下误差大概为3 ms。<br>$$T_(AW)=t_(AW)*1024-(T_(TxPhy)-T_(TxTarget))+t_(air)+T_(Rx)$$</p>
 <h3 id="信道序列"><a href="#信道序列" class="headerlink" title="信道序列"></a>信道序列</h3><p>当所有节点的AW同步后，所有节点就处于同一个AW下，准备进行通信，这时就需要指示节点使用哪个信道进行通信并且将信道序列进行对齐以保证两个节点之间可以同时使用该信道通信。AWDL常用的社交信道为44，6，149或0，其中0代表节点没有监听任何信道。AWDL将AW序列号与可用的信道序列进行映射，节点使用Synchronization Parameters TLV传输目前可用的信道序列，该TLV的格式如下图所示。<br><img src="/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/spt.jpg" alt></p>
 <p>传输的信道序列的个数c+1固定为16，但是类似于AW，信道序列可以使用step字段进行延长(AW中的step为3，为一个EAW扩展了3个EW)，原论文逆向发现该step恒为3，表示一个信道的使用时间将持续4个AW或者1个EAW，如下图所示。<br><img src="/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/channel.jpg" alt></p>
 <p>当一个节点收到来自主节点的信道序列以及当前AW序列号后可以使用如下的公式计算(映射)出当前AW需要使用信道C。<br>$$C=i mod ((c+1)*(step+1))$$</p>
@@ -428,7 +434,7 @@
 <h2 id="身份认证"><a href="#身份认证" class="headerlink" title="身份认证"></a>身份认证</h2><p>发送方将对集群中每一个发现了AirDrop服务的设备建立一个TLS的链接，通过向接收方发送HTTP Post请求(路径为/Discover)执行一个完整的身份认证握手，如果身份验证成功(返回HTTP 200 OK)，则该设备的图标将会出现在发送方的AirDrop分享界面中。</p>
 <p>对于TLS链接，苹果有两种不同的链接方式：已认证链接(Authenticated Connection)和未认证链接(Unauthenticated Connection)，AirDrop默认尝试使用已认证链接进行认证建立TLS链接。已认证链接只能在拥有Apple ID并且互相存在于联系人通讯录的人之间建立。在AirDrop设置为仅联系人模式时只会使用已认证链接，而设置为允许任何人连接的模式下两种链接都会存在。经过已认证链接的身份认证后，AirDrop界面中将会显示接收方的姓名以及联系人照片，如果没有照片则显示联系人姓名首字母的大写。而未认证链接的身份认证后则不会显示任何照片与姓名，联系人头像的位置将会显示默认的头像(带有头部轮廓的灰色头像)，姓名则会被设备名所替代，原论文中的举例如下：<br><img src="/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/ui.jpg" alt></p>
 <p>为了进行身份验证，设备需要证明其拥有与Apple ID相关联的联系人标识符$c_i$(如电话，电子邮件)，该标识符必须存在于设备的联系人通讯录中。当用户使用Apple ID登录设备后，将会被分配一个唯一的UUID。在进行身份验证时会使用哈希散列形式的苹果签名的“记录数据(Record Data, RD)”，RD包含了设备UUID与所有设备中的通讯里联系人标识符$c_i$，其格式如下所示。<br>$$RD = UUID, SHA2(c_1), …, SHA2(c_n)$$</p>
-<p>发送方之后对RD签名为$RD_s$，签名格式如下所示，其中s均代表苹果证书，sign代表使用$s_VR$对RD进行签名。<br>$$RD_s = RD, sign(s_VR, RD), s_VR, s_AAI2$$</p>
+<p>发送方之后对RD签名为$RD_s$，签名格式如下所示，其中s均代表苹果证书，sign代表使用$s_(VR)$对RD进行签名。<br>$$RD_s = RD, sign(s_(VR), RD), s_(VR), s_(AAI2)$$</p>
 <p>在进行认证时接收方设备将会对其通讯录中的每个联系人标识符计算SHA2，并将其与$RD_s$中包含的哈希进行比较，验证设备UUID是否与当前TLS链接的证书相匹配。若发送方或接收方未能提供有效的经过苹果签名的TLS证书或者没有提供RD，则AirDrop会将其视为未认证链接。</p>
 <p>注：在进行身份认证(POST /Discover)与传输请求(POST /Ask)时携带的数据均为RD，在第一阶段广播BLE时携带的数据并不是RD，虽然内容很像，但是只有通讯录联系人的部分哈希散列。</p>
 <h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>当发送方在AirDrop界面中选择其中一个接收方后，双方将再次建立一个TLS链接，AirDrop将会向接收方发送一个包含文件元数据与缩略图的HTTP Post请求(路径为/Ask)。接收方收到请求后会弹出包含该文件缩略图的界面以提示用户是否决定接收该文件。若接收方决定接收(返回HTTP 200 OK)，则将继续启动数据传输过程，发送方会将文件使用HTTP Post到接收方的设备里(路径为/Upload)。</p>
