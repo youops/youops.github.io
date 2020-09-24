@@ -158,13 +158,6 @@
 
   
   <url>
-    <loc>https://srpopty.github.io/tags/Think/</loc>
-    <lastmod>2020-09-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://srpopty.github.io/tags/BlueWhale/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
@@ -179,14 +172,14 @@
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/tags/Trick/</loc>
+    <loc>https://srpopty.github.io/tags/Think/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/tags/SocialEngineering/</loc>
+    <loc>https://srpopty.github.io/tags/Trick/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -207,6 +200,13 @@
   </url>
   
   <url>
+    <loc>https://srpopty.github.io/tags/SocialEngineering/</loc>
+    <lastmod>2020-09-24</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://srpopty.github.io/tags/Wireless/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
@@ -214,13 +214,6 @@
   </url>
   
 
-  
-  <url>
-    <loc>https://srpopty.github.io/categories/Life/</loc>
-    <lastmod>2020-09-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
   
   <url>
     <loc>https://srpopty.github.io/categories/hack/</loc>
@@ -231,6 +224,13 @@
   
   <url>
     <loc>https://srpopty.github.io/categories/CTF/</loc>
+    <lastmod>2020-09-24</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://srpopty.github.io/categories/Life/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -251,14 +251,14 @@
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/categories/CSAPP/</loc>
+    <loc>https://srpopty.github.io/categories/Paper/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/categories/Paper/</loc>
+    <loc>https://srpopty.github.io/categories/CSAPP/</loc>
     <lastmod>2020-09-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
