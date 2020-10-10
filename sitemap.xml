@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://srpopty.github.io/2020/10/10/SSRF%20CheatSheet/</loc>
+    
+    <lastmod>2020-10-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://srpopty.github.io/2020/08/11/AWDL%E5%8D%8F%E8%AE%AE%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</loc>
     
     <lastmod>2020-09-23</lastmod>
@@ -165,6 +172,13 @@
   </url>
   
   <url>
+    <loc>https://srpopty.github.io/tags/WriteUp/</loc>
+    <lastmod>2020-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://srpopty.github.io/tags/Think/</loc>
     <lastmod>2020-10-10</lastmod>
     <changefreq>daily</changefreq>
@@ -172,7 +186,14 @@
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/tags/WriteUp/</loc>
+    <loc>https://srpopty.github.io/tags/SSRF/</loc>
+    <lastmod>2020-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://srpopty.github.io/tags/CheatSheet/</loc>
     <lastmod>2020-10-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -223,14 +244,14 @@
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/categories/Life/</loc>
+    <loc>https://srpopty.github.io/categories/CTF/</loc>
     <lastmod>2020-10-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://srpopty.github.io/categories/CTF/</loc>
+    <loc>https://srpopty.github.io/categories/Life/</loc>
     <lastmod>2020-10-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
