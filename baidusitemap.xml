@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://srpopty.github.io/2020/10/26/Signal-CheatSheet/</loc>
+    <lastmod>2020-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://srpopty.github.io/2020/10/26/Errorno-CheatSheet/</loc>
+    <lastmod>2020-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://srpopty.github.io/2020/10/26/Syscall-CheatSheet/</loc>
+    <lastmod>2020-10-26</lastmod>
+  </url>
+  <url>
     <loc>https://srpopty.github.io/2020/10/16/BlueWhaleOJ-Pwn-WriteUp-Part1/</loc>
     <lastmod>2020-10-16</lastmod>
   </url>
   <url>
-    <loc>https://srpopty.github.io/2020/10/10/SSRF%20CheatSheet/</loc>
+    <loc>https://srpopty.github.io/2020/10/10/SSRF-CheatSheet/</loc>
     <lastmod>2020-10-10</lastmod>
   </url>
   <url>
