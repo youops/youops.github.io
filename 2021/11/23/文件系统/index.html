@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"youops.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文件系统文件系统的组成每个文件分配两个数据结构 索引节点（index node） 记录文件的元信息 ，比如 inode 编号、文件大小、访问权限、创建时间、修改时间、数据在磁盘的位置等等。 目录项(directory entry)  用于记录文件的名字、索引节点指针以及与其他目录项的层级关联关系。  目录与目录项的区别 目录也是文件，用索引节点唯一标识，和普通文件不同的是，普通文件在次盘里保存的是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Strawberry Bear">
+<meta property="og:url" content="https://youops.github.io/2021/11/23/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Strawberry Bear">
+<meta property="og:description" content="文件系统文件系统的组成每个文件分配两个数据结构 索引节点（index node） 记录文件的元信息 ，比如 inode 编号、文件大小、访问权限、创建时间、修改时间、数据在磁盘的位置等等。 目录项(directory entry)  用于记录文件的名字、索引节点指针以及与其他目录项的层级关联关系。  目录与目录项的区别 目录也是文件，用索引节点唯一标识，和普通文件不同的是，普通文件在次盘里保存的是">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122210000743.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122211228600.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122212044083.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122214252121.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122222719978.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122223008348.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122225152927.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122233305120.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123112905656.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123113644517.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123144134911.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123153928227.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123153958979.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211123154029407.png">
+<meta property="article:published_time" content="2021-11-23T07:15:14.506Z">
+<meta property="article:modified_time" content="2021-11-23T07:15:14.506Z">
+<meta property="article:author" content="Youops">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211122210000743.png">
+
+<link rel="canonical" href="https://youops.github.io/2021/11/23/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title> | Strawberry Bear</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Strawberry Bear" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Strawberry Bear</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://youops.github.io/2021/11/23/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Youops">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strawberry Bear">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-23 15:15:14" itemprop="dateCreated datePublished" datetime="2021-11-23T15:15:14+08:00">2021-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h1><h2 id="文件系统的组成"><a href="#文件系统的组成" class="headerlink" title="文件系统的组成"></a>文件系统的组成</h2><h3 id="每个文件分配两个数据结构"><a href="#每个文件分配两个数据结构" class="headerlink" title="每个文件分配两个数据结构"></a>每个文件分配两个数据结构</h3><ul>
+<li>索引节点（index node） 记录文件的元信息 ，比如 inode 编号、文件大小、访问权限、创建时间、修改时间、<strong>数据在磁盘的位置</strong>等等。</li>
+<li>目录项(directory entry)  用于记录文件的名字、索引节点指针以及与其他目录项的层级关联关系。</li>
+</ul>
+<h3 id="目录与目录项的区别"><a href="#目录与目录项的区别" class="headerlink" title="目录与目录项的区别"></a>目录与目录项的区别</h3><ul>
+<li>目录也是文件，用索引节点唯一标识，和普通文件不同的是，普通文件在次盘里保存的是文件数据，而目录文件在磁盘里面保存子目录或文件。</li>
+<li>目录项是内核一个数据结构，缓存在内存。</li>
+</ul>
+<h3 id="文件数据在磁盘中的存储："><a href="#文件数据在磁盘中的存储：" class="headerlink" title="文件数据在磁盘中的存储："></a>文件数据在磁盘中的存储：</h3><ul>
+<li>磁盘读写的最小扇区是512B大小，文件系统最小读写单位是逻辑块（数据块），Linux中的逻辑块是8个扇区。</li>
+</ul>
+<h3 id="索引节点、目录项、文件数据间的关系："><a href="#索引节点、目录项、文件数据间的关系：" class="headerlink" title="索引节点、目录项、文件数据间的关系："></a>索引节点、目录项、文件数据间的关系：</h3><p>![image-20211122164501080](/Users/apple/Library/Application Support/typora-user-images/image-20211122164501080.png)</p>
+<p>​    磁盘进行格式化的时候，会被分成超级块、索引节点区和数据块区。我们不可能把超级块和索引节点区全部加载到内存，只有当需要使用的时候，才将其加载进内存，</p>
+<ul>
+<li>超级块 用来存储文件系统的详细信息，比如块个数、块大小、空闲块等等  当文件系统挂载时进入内存</li>
+<li>索引节点区  用来存储索引节点 当文件被访问时进入内存</li>
+<li>数据块区  用来存储文件或目录数据</li>
+</ul>
+<h2 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h2><p>文件系统的种类众多，而操作系统对用户提供统一的接口，于是在用户层与文件系统层引入了中间层，这个中间层称为虚拟文件系统（VFS）。</p>
+<p>VFS定义了一组所有文件系统都支持的数据结构和标准接口，这样程序猿不需要了解文件系统的工作原理，只需要了解VFS提供的统一接口即可。</p>
+<p>![image-20211122172943663](/Users/apple/Library/Application Support/typora-user-images/image-20211122172943663.png)</p>
+<p>文件系统首先要挂载到某个目录才可以正常使用，比如Linux系统在启动时，会把文件系统挂载到根目录。</p>
+<h2 id="文件的使用"><a href="#文件的使用" class="headerlink" title="文件的使用"></a>文件的使用</h2><p>我们打开文件后，操作系统会跟踪进程打开的所有文件。操作系统为每个进程维护一个打开文件表进行跟踪，文件表的每一项代表‘文件描述符’，所以说文件描述符是打开文件的标识。</p>
+<p>``</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fd = open(name, flag); # 打开文件  fd表示文件描述符</span><br><span class="line">...</span><br><span class="line">write(fd,...);         # 写数据</span><br><span class="line">...</span><br><span class="line">close(fd);             # 关闭文件</span><br></pre></td></tr></table></figure>
+
+
+
+<p>操作系统在打开文件表中维护着打开文件的状态和信息：</p>
+<ul>
+<li><p>文件指针：系统跟踪上次读写位置作为当前文件位置指针，这种指针对打开文件的某个进程来说是唯一的。</p>
+</li>
+<li><p>文件打开计数器：文件关闭时，操作系统必须重用“打开文件表”条目，否则表内空间不够用。因为多个进程可能打开同一个文件，所以系统在删除打开文件条目之前，必须等待最后一个进程关闭文件，该进程打开和关闭的数量记为0时，系统关闭文件，删除该条目。</p>
+</li>
+<li><p>文件磁盘位置：绝大多数文件操作都要求系统修改文件数据，该信息保存在内存中，以免每个操作都从磁盘中读取</p>
+</li>
+<li><p>访问权限：每个进程打开都需要一个访问模式，该信息保存在进程的打开文件表中，以便操作系统能允许或拒绝之后的I/O请求</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122210000743.png" style="zoom:70%;">
+
+</li>
+</ul>
+<p>文件系统的基本操作单位是数据块（逻辑块） 用户以字节的方式读写文件。</p>
+<p>操作系统读写文件的过程：</p>
+<ul>
+<li>当用户进程从文件读取1字节大小的数据时，文件系统则需要获取字节所在的数据块，再返回数据块对应的用户进程所需要的数据部分，</li>
+<li>当用户进程把1字节大小的数据写进文件时，文件系统则需要写入数据的数据块的位置，然后修改数据块中对用的部分，最后再把数据块写会磁盘。</li>
+</ul>
+<h2 id="文件存储"><a href="#文件存储" class="headerlink" title="文件存储"></a>文件存储</h2><h3 id="连续空间存储"><a href="#连续空间存储" class="headerlink" title="连续空间存储"></a>连续空间存储</h3><p>文件存放在磁盘中连续的物理空间中，因此需要提前知道文件的大小，文件系统才能根据文件大小在磁盘上找到一块连续的磁盘空间。所以，文件头里需要制定「起始块的位置」和「长度」。</p>
+<p>注意，此处的文件头，类似于Linux的inode</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122211228600.png" alt="image-20211122211228600" style="zoom:70%;">
+
+<h3 id="非连续空间存储"><a href="#非连续空间存储" class="headerlink" title="非连续空间存储"></a>非连续空间存储</h3><h4 id="链表方式"><a href="#链表方式" class="headerlink" title="链表方式"></a>链表方式</h4><ul>
+<li><p>隐式链表：文件头包含「第一块」和「最后一块」的位置，并且每个数据块里面留出一个指针空间，用来存放下一个数据块的位置。只能顺序逐个查找</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122212044083.png" style="zoom:80%;">
+</li>
+<li><p>显示链接：把用于链接文件各数据块的指针，显示地存放在内存的一张链表（文件分配表）中，每个表象中存放链接指针，指向下一个数据块</p>
+</li>
+</ul>
+<h4 id="索引方式"><a href="#索引方式" class="headerlink" title="索引方式"></a>索引方式</h4><p>索引的实现是为每个文件创建「索引数据块」，存放指向文件数据块的指针列表，文件头包含了只想索引数据块的指针。文件头知道索引数据块的位置，再通过索引数据块里的索引信息找到对应数据块。</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122214252121.png" style="zoom:80%;">
+
+<h2 id="空闲空间管理"><a href="#空闲空间管理" class="headerlink" title="空闲空间管理"></a>空闲空间管理</h2><h3 id="空闲表法"><a href="#空闲表法" class="headerlink" title="空闲表法"></a>空闲表法</h3><p>为所有空闲空间建立一张空表，表内包括空闲区的第一个块号和空闲长度。</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122222719978.png" alt="image-20211122222719978" style="zoom:80%;">
+
+<h3 id="空闲链表法"><a href="#空闲链表法" class="headerlink" title="空闲链表法"></a>空闲链表法</h3><p>使用「链表」的方式管理空闲空间</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122223008348.png" alt="image-20211122223008348" style="zoom:80%;">
+
+<h3 id="位图法"><a href="#位图法" class="headerlink" title="位图法"></a>位图法</h3><p>利用二进制的一位来表示磁盘中的一个盘块的使用情况，磁盘上所有的盘块都有一个二进制与之对应。</p>
+<p>当值为0时，表示对应的盘块空闲，值为1表示已经分配</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1111110011111110001110110111111100111 ...</span><br></pre></td></tr></table></figure>
+
+<p>在 Linux 文件系统就采用了位图的方式来管理空闲空间，不仅用于数据空闲块的管理，还用于 inode 空闲块的管理，因为 inode 也是存储在磁盘的，自然也要有对其管理。</p>
+<h2 id="文件系统的结构"><a href="#文件系统的结构" class="headerlink" title="文件系统的结构"></a>文件系统的结构</h2><p>Linux是用位图的方式管理空闲空间，内核通过inode的位图找到可用的inode并进行分配。其中存位图的二进制的块称为块组。</p>
+<p>下图给出了 Linux Ext2 整个文件系统的结构和块组的内容，文件系统都由大量块组组成，在硬盘上相继排布：</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122225152927.png" alt="image-20211122225152927" style="zoom:80%;">
+
+<p>引导块：在系统启动时用于启用引导，后面接着连续的块组。</p>
+<p>块组组成：</p>
+<ul>
+<li>超级块 包含文件系统的重要信息，比如inode总个数、块总个数、每个块组的inode个数</li>
+<li>块组描述符表 包含文件系统中各个块组的状态 如块组中空闲块的个数</li>
+<li>数据位图和inode位图： 表示对用的数据块或inode是否被使用</li>
+<li>inode列表 包含块组中所有的inode，inode用于保存文件系统中与各个文件和目录相关的所有元数据</li>
+<li>数据块 包含文件的有用数据</li>
+</ul>
+<p><strong>超级块和块组描述符表，这两个都是全局信息，而且非常的重要</strong>，这么做是有两个原因： - 如果系统崩溃破坏了超级块或块组描述符，有关文件系统结构和内容的所有信息都会丢失。</p>
+<h2 id="目录的存储"><a href="#目录的存储" class="headerlink" title="目录的存储"></a>目录的存储</h2><p>目录也是文件，与普通文件不同的是，普通文件的块里面保存的是文件数据，而目录文件的块保存的是目录里一项一项的文件信息。</p>
+<p>在目录文件中，最简单的保存格式是列表，就是将目录下的文件信息保存在表里。</p>
+<p>列表中每一项都代表该项目下的文件的文件名和对应的inode，通过这个inode可以找到真正的文件，</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211122233305120.png" alt="image-20211122233305120" style="zoom:80%;">
+
+<p>通常，第一项「.」表示当前目录，第二项「..」表示上一级目录，接下来是一项一项的文件名和inode</p>
+<p>若文件很多时，对文件名取哈希计算，把哈希值保存起来，如果我们要查找一个目录下面的文件名，可以通过名称取哈希。查找对应哈希值。</p>
+<h2 id="软链接和硬链接"><a href="#软链接和硬链接" class="headerlink" title="软链接和硬链接"></a>软链接和硬链接</h2><p>Linux通过硬链接和软链接的方式实现给某个文件取别名。</p>
+<p>硬链接是多个目录项中的「索引节点」指向文件，也就是指向同一个inode，但是inode是不可能跨越文件系统的，每个文件系统都有各自的inode数据结构和列表，所以硬链接是不可用于跨文件系统的。由于多个目录项都是指向一个inode，那么只有删除文件的所有硬链接以及源文件时，系统才会彻底删除该文件。</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123112905656.png" alt="image-20211123112905656" style="zoom:80%;">
+
+<p>软链接相当于重新创建一个文件，这个文件有独立的inode，但是这个文件的内容是另外一个文件的路径，所以访问软链接的时候，实际上相当于访问到了另外一个文件，所以软链接是可以跨文件系统的，甚至目标文件被删除了，链接文件还是在的，只不过文件找不到了而已。</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123113644517.png" alt="image-20211123113644517" style="zoom:80%;">
+
+<h2 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I/O"></a>文件I/O</h2><h3 id="缓冲与非缓冲I-O"><a href="#缓冲与非缓冲I-O" class="headerlink" title="缓冲与非缓冲I/O"></a>缓冲与非缓冲I/O</h3><p>文件操作的标准库是可以实现数据的缓存，那么根据「是否利用标准库缓冲」，可以把文件I/O分为缓冲I/O和非缓冲I/O：</p>
+<ul>
+<li>缓冲I/O，利用的是标准库的缓存实现文件的加速访问，而标准库再通过系统调用访问文件</li>
+<li>非缓冲I/O，直接通过系统调用访问文件，不用经过标准库缓存。</li>
+</ul>
+<p>很多程序遇到换行时才真正输出，而换行前的内容其实就是被标准库暂时缓存了起来，这样做的目的是减少系统调用的次数，减小CPU上下文切换的开销</p>
+<h3 id="直接与非直接I-O"><a href="#直接与非直接I-O" class="headerlink" title="直接与非直接I/O"></a>直接与非直接I/O</h3><p>磁盘I/O很慢，Linux内核为了减少磁盘I/O次数，在系统调用后，会把用户数据拷贝到内核中缓存起来，这个内核缓存空间称为「页缓存」，只有当缓存满足某些条件的时候，才发起磁盘I/O请求</p>
+<p>根据「是否利用操作系统的缓存」，可以把文件I/O分为直接I/O与非直接I/O：</p>
+<ul>
+<li>直接I/O：不会发生内核缓存和用户程序之间数据的肤质，而是直接经过文件系统访问磁盘。</li>
+<li>非直接I/O：读操作是，数据从内核缓存中拷贝给用户程序，写操作时，用户从用户程序拷贝给内核缓存，再由内核决定什么时候刺蛾入数据到磁盘。</li>
+</ul>
+<p>若在使用文件操作类的系统调用函数时，指定了O_DIRECT标志，则表示使用I/O。否则使用非直接I/O</p>
+<p>以下几种场景会触发内核缓存的数据写入磁盘：</p>
+<ul>
+<li>在调用write的最后，当发现内核缓存的数据太多的时候，内核会把数据写到磁盘上</li>
+<li>用户主动调用sync，内核缓存会刷到磁盘上</li>
+<li>当内存十分紧张，无法再分配页面是，也会把内核缓存的数据刷到磁盘上</li>
+<li>内核缓存的数据的缓存时间超过某个时间时，也会把数据刷到磁盘上</li>
+</ul>
+<h3 id="阻塞与非阻塞-VS-同步与异步"><a href="#阻塞与非阻塞-VS-同步与异步" class="headerlink" title="阻塞与非阻塞 VS 同步与异步"></a>阻塞与非阻塞 VS 同步与异步</h3><p><strong>阻塞I/O</strong>，当用户程序执行read，线程会被阻塞，一直等到内核数据准备好，并把数据从内核缓冲区拷贝到应用程序缓冲区中，当拷贝完成时，read才会返回。</p>
+<p>阻塞等待的是「内核数据准备好」和「数据从内核态拷贝到用户态」这两个过程</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123144134911.png" alt="image-20211123144134911" style="zoom:30%;">
+
+<p><strong>非阻塞I/O</strong>,非阻塞的read请求在数据未准备好的情况下立即返回，可以继续往下执行，此时应用程序不断轮询内核，直到数据准备好，<strong>read进行系统调用</strong>后内核将数据拷贝到应用程序缓冲区，*才可以获取到结果</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123153928227.png" alt="image-20211123153928227" style="zoom:60%;">
+
+<p>注意，这里最后一次read调用，获取数据的过程是一个同步的过程，是需要等待的过程。这里的同步指的是内核态的数据拷贝到用户程序的缓存区这个过程。</p>
+<p>I**/O多路复用**，替代轮询内核的方式。它是通过I/O事件分发，当内核数据准备好时，再以事件通知应用程序进行操作。在没有被通知的情况下，应用进程可以使用CPU做其他的事情。</p>
+<p>下图是使用select I/O多路复用过程。注意，read获取数据的过程（数据从内核态拷贝到用户态的过程），也是一个同步的过程，需要等待。</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123153958979.png" alt="image-20211123153958979" style="zoom:67%;">
+
+<p>实际上，无论是阻塞I/O、非阻塞I/O都是同步调用。因为他们在read调用时，内核将数据从内核空间拷贝到应用程序空间的过程都需要等待，也就是说这个过程是同步的。如果内核实现的拷贝效率不高，read调用就会在这个同步过程中等待比较长的时间，</p>
+<p>而真正的<strong>异步I/O</strong>是「内核数据准备好」和「数据从内核态拷贝到用户态」这两个过程都不用等待。</p>
+<p>当我们发起aio_read之后，就立即返回，内核自动完成的，应用程序并不需要主动发起拷贝动作（read发起系统调用），过程如下图：</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211123154029407.png" alt="image-20211123154029407" style="zoom:67%;">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/17/Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/30/Ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">1.1.</span> <span class="nav-text">文件系统的组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%8F%E4%B8%AA%E6%96%87%E4%BB%B6%E5%88%86%E9%85%8D%E4%B8%A4%E4%B8%AA%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.1.</span> <span class="nav-text">每个文件分配两个数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E4%B8%8E%E7%9B%AE%E5%BD%95%E9%A1%B9%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.2.</span> <span class="nav-text">目录与目录项的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%95%B0%E6%8D%AE%E5%9C%A8%E7%A3%81%E7%9B%98%E4%B8%AD%E7%9A%84%E5%AD%98%E5%82%A8%EF%BC%9A"><span class="nav-number">1.1.3.</span> <span class="nav-text">文件数据在磁盘中的存储：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E8%8A%82%E7%82%B9%E3%80%81%E7%9B%AE%E5%BD%95%E9%A1%B9%E3%80%81%E6%96%87%E4%BB%B6%E6%95%B0%E6%8D%AE%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="nav-number">1.1.4.</span> <span class="nav-text">索引节点、目录项、文件数据间的关系：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.</span> <span class="nav-text">虚拟文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">文件的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.</span> <span class="nav-text">文件存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E7%A9%BA%E9%97%B4%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">连续空间存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E8%BF%9E%E7%BB%AD%E7%A9%BA%E9%97%B4%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.2.</span> <span class="nav-text">非连续空间存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">链表方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">索引方式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%AE%A1%E7%90%86"><span class="nav-number">1.5.</span> <span class="nav-text">空闲空间管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E9%97%B2%E8%A1%A8%E6%B3%95"><span class="nav-number">1.5.1.</span> <span class="nav-text">空闲表法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8%E6%B3%95"><span class="nav-number">1.5.2.</span> <span class="nav-text">空闲链表法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE%E6%B3%95"><span class="nav-number">1.5.3.</span> <span class="nav-text">位图法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.6.</span> <span class="nav-text">文件系统的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">1.7.</span> <span class="nav-text">目录的存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AF%E9%93%BE%E6%8E%A5%E5%92%8C%E7%A1%AC%E9%93%BE%E6%8E%A5"><span class="nav-number">1.8.</span> <span class="nav-text">软链接和硬链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6I-O"><span class="nav-number">1.9.</span> <span class="nav-text">文件I&#x2F;O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E4%B8%8E%E9%9D%9E%E7%BC%93%E5%86%B2I-O"><span class="nav-number">1.9.1.</span> <span class="nav-text">缓冲与非缓冲I&#x2F;O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E4%B8%8E%E9%9D%9E%E7%9B%B4%E6%8E%A5I-O"><span class="nav-number">1.9.2.</span> <span class="nav-text">直接与非直接I&#x2F;O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E-VS-%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5"><span class="nav-number">1.9.3.</span> <span class="nav-text">阻塞与非阻塞 VS 同步与异步</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Youops</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/youops" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;youops" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youops</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

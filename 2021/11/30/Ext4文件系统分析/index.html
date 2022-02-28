@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"youops.github.io","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Ext4文件系统分析Blocks（块）ext4文件系统最基本的分配单元是block（块），block是由一组连续的sectors来组成，其大小介于1k-4k，当然不能是任意值，只能是2的整数次幂个sectors。然后连续的blocks再组成grop（块组), block的大小是在mkfs（在特定的分区建立文件系统）时指定的，默认是4K 默认情况下，系统可以包含2^32个blocks，如果开启“64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Strawberry Bear">
+<meta property="og:url" content="https://youops.github.io/2021/11/30/Ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Strawberry Bear">
+<meta property="og:description" content="Ext4文件系统分析Blocks（块）ext4文件系统最基本的分配单元是block（块），block是由一组连续的sectors来组成，其大小介于1k-4k，当然不能是任意值，只能是2的整数次幂个sectors。然后连续的blocks再组成grop（块组), block的大小是在mkfs（在特定的分区建立文件系统）时指定的，默认是4K 默认情况下，系统可以包含2^32个blocks，如果开启“64">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211129192616568.png">
+<meta property="og:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211130153751465.png">
+<meta property="article:published_time" content="2021-11-30T07:38:23.873Z">
+<meta property="article:modified_time" content="2021-11-30T07:38:23.873Z">
+<meta property="article:author" content="Youops">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youops.github.io/Users/apple/Library/Application%20Support/typora-user-images/image-20211129192616568.png">
+
+<link rel="canonical" href="https://youops.github.io/2021/11/30/Ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title> | Strawberry Bear</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Strawberry Bear" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Strawberry Bear</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://youops.github.io/2021/11/30/Ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Youops">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Strawberry Bear">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-30 15:38:23" itemprop="dateCreated datePublished" datetime="2021-11-30T15:38:23+08:00">2021-11-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Ext4文件系统分析"><a href="#Ext4文件系统分析" class="headerlink" title="Ext4文件系统分析"></a>Ext4文件系统分析</h1><h2 id="Blocks（块）"><a href="#Blocks（块）" class="headerlink" title="Blocks（块）"></a>Blocks（块）</h2><p>ext4文件系统最基本的分配单元是block（块），block是由一组连续的sectors来组成，其大小介于1k-4k，当然不能是任意值，只能是2的整数次幂个sectors。然后连续的blocks再组成grop（块组), block的大小是在mkfs（在特定的分区建立文件系统）时指定的，默认是4K</p>
+<p>默认情况下，系统可以包含2^32个blocks，如果开启“64bit”特性，可以支持2^64个blocks</p>
+<h2 id="group-（块组）"><a href="#group-（块组）" class="headerlink" title="group （块组）"></a>group （块组）</h2><p>ext4文件系统的磁盘布局是先把磁盘分成一个个大小相同的block块（每个block的大小默认是4K），然后把这些block块合并成一个group。</p>
+<p>group大小最大为128M（默认为128M），计算公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Group_size = (blk_size*8)*blk_size=4096*8*4096= 32768*4096=128M</span><br></pre></td></tr></table></figure>
+
+<p>对于一个块组结构：</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211129192616568.png" alt="image-20211129192616568" style="zoom:80%;">
+
+<p>块组组成：</p>
+<p>![image-20211129180450564](/Users/apple/Library/Application Support/typora-user-images/image-20211129180450564.png)</p>
+<ul>
+<li><p>引导块：为磁盘分区的第一个块，记录文件系统分区的一些信息，引导加载当前分区的程序和数据被保存在这个块中。一般占用2kB。</p>
+</li>
+<li><p>超级块(super block):  超级块用于存储文件系统全局的配置参数(譬如：块大小，总的块数和inode数)和动态信息(譬如：当前空闲块数和inode数)，其处于文件系统开始位置的1k处，所占大小为1k。为了系统的健壮性，最初每个块组都有超级块和组描述符表(以下将用GDT)的一个拷贝，但是当文件系统很大时，这样浪费了很多块(尤其是GDT占用的块多)，后来采用了一种稀疏的方式来存储这些拷贝，只有块组号是3, 5 ,7的幂的块组(譬如说1,3,5,7,9,25,49…)才备份这个拷贝。通常情况下，只有主拷贝(第0块块组)的超级块信息被文件系统使用，其它拷贝只有在主拷贝被破坏的情况下才使用。</p>
+</li>
+<li><p>块组描述符表(GDT):  GDT用于存储块组描述符，其占用一个或者多个数据块，具体取决于文件系统的大小。它主要包含块位图，inode位图和inode表位置，当前空闲块数，inode数以及使用的目录数(用于平衡各个块组目录数)，具体定义可以参见ext3_fs.h文件中struct ext3_group_desc。每个块组都对应这样一个描述符，目前该结构占用32个字节，因此对于块大小为4k的文件系统来说，每个块可以存储128个块组描述符。由于GDT对于定位文件系统的元数据非常重要，因此和超级块一样，也对其进行了备份。GDT在每个块组(如果有备份)中内容都是一样的，其所占块数也是相同的。但是当文件系统很大时，这样浪费了很多块(尤其是GDT占用的块多)，后来采用了一种稀疏的方式来存储这些拷贝，详见元块组集（MetaGroup Blocks）</p>
+</li>
+<li><p>预留块组描述符表(Reserved GDT Blocks)：mkfs将在块组描述符表后面分配预留GDT表数据块以用于将来拓展文件系统</p>
+</li>
+<li><p>数据位图(Data Block Bitmap)和inode位图(inode Bitmap)： 表示对用的数据块或inode是否被使用</p>
+</li>
+<li><p>inode列表(inode Table) ：包含块组中所有的inode，inode用于保存文件系统中与各个文件和目录相关的所有元数据</p>
+</li>
+<li><p>数据块(Data Blocks) 包含文件的有用数据</p>
+</li>
+</ul>
+<h2 id="磁盘布局"><a href="#磁盘布局" class="headerlink" title="磁盘布局"></a>磁盘布局</h2><p>一个Ext4文件系统被分成一系列块组。为减少磁盘碎片产生的性能瓶颈，块分配器尽量保持每个文件的数据块都在同一个块组中，从而减少寻道时间。</p>
+<p>![image-20211130154655083](/Users/apple/Library/Application Support/typora-user-images/image-20211130154655083.png)</p>
+<h2 id="Flexible块组（flex-bg）"><a href="#Flexible块组（flex-bg）" class="headerlink" title="Flexible块组（flex_bg）"></a>Flexible块组（flex_bg）</h2><p>几个块组在一起组成一个逻辑块组flex_bg。Flex_bg的第一个块组中的位图空间和inode空间包含了自身及其他块组的位图和inode表信息。</p>
+<p>例如：flex_bg包含4个块组，块组0将顺序包含超级块、块组描述符表、<strong>块组0-3的数据块位图、块组0-3的inode位图、块组0-3的inode表</strong>，块组0中的其他空间用于存储文件数据。同时，其他块组的数据块位图、inode位图、inode表就不存在了，但是超级块和GDT存在。</p>
+<p>![image-20211129184024607](/Users/apple/Library/Application Support/typora-user-images/image-20211129184024607.png)</p>
+<p>Flexible块组的作用：</p>
+<ul>
+<li>聚集元数据，加速元数据载入</li>
+<li>使得大文件在磁盘上尽量连续</li>
+</ul>
+<h2 id="元块组集（Meta-Block-Groups）"><a href="#元块组集（Meta-Block-Groups）" class="headerlink" title="元块组集（Meta Block Groups）"></a>元块组集（Meta Block Groups）</h2><p>如果不采用元块组集特性，在每个冗余备份的超级块的后面是一个完整的（包括所有块组描述符的）块组描述符表的备份。以Ext4的块组描述符大小64 Bytes计算,group最大为128M，即2^27 bytes，那么一个groups元数据有2^27/64=2^21个，文件系统中最多只能描述2^21个块组（2^21*2^27=2^48），也就是文件系统最大为256TB。</p>
+<p>采用元块组集后，因为Ext4支持的是48bits block寻址方式，所以最大卷大小为2^48 个block，2^48*2^12=2^60B，而每个group为128M=2^27B，所以有2^60/2^27=2^33个group。</p>
+<p>元块组实际上是可以用一个块组描述符块来进行描述的块组集，简单的说，它由一系列块组组成，同时这些块组对应的块组描述符存储在一个块中。对于block大小为4K的Ext4文件系统，一个元块组集包含64个块组。它的出现使得Ext3和Ext4的磁盘布局有了一定的变化，以往超级块后紧跟的是变长的GDT块，现在是超级块依然决定于是否是3,5,7的幂，而一个块组描述符块则存储在元块组的第一个，第二个和最后一个块组的开始处(见下图) </p>
+<p>medablock group方案将存储在每个group 中第一个block中的group descriptor移动为medablock group为单位的第一个block group，冗余备份被放在了每个metadata block第二个和最后一个group中。</p>
+<p>![image-20211130121710512](/Users/apple/Library/Application Support/typora-user-images/image-20211130121710512.png)</p>
+<h2 id="延迟块组初始化"><a href="#延迟块组初始化" class="headerlink" title="延迟块组初始化"></a>延迟块组初始化</h2><p>ext4中有一个新特性，mkfs只初始化元块组集的3个GDT。INODE_UNINIT和BLOCK_UNINIT两个标识就代表block group中的inode Bitmap和Block Bitmap是可以计算的，因此bitmap block就不用进行初始化。 INODE_ZERO标识疑问这个inode table已经呗初始化了。该标识依赖后台内核进程初始化，mkfs并不会对该标识进行设置。</p>
+<p>由于不用对bitmap、inode table进行写零初始化，因此mkfs的效率大大提升。</p>
+<h2 id="特殊的inode"><a href="#特殊的inode" class="headerlink" title="特殊的inode"></a>特殊的inode</h2><p>Ext4预留了一些inode做特殊特性使用，见下表：</p>
+<img src="/Users/apple/Library/Application Support/typora-user-images/image-20211130153751465.png" alt="image-20211130153751465" style="zoom:80%;">
+
+<h2 id="Block和Inode分配策略"><a href="#Block和Inode分配策略" class="headerlink" title="Block和Inode分配策略"></a>Block和Inode分配策略</h2><p>对于机械磁盘（通常是指需要使用探针访问的那种），将相近相似、最近经常使用的数据存放在一起，这样就减少了在访问数据时磁头所需要移动的偏移量，进而能大幅度提升磁盘的IO性能；对于SSD来说，就不存在磁头所移动的偏移量了，但是「Data locality」（数据局限性）可以显著增加单次请求中的数据量，从而减少请求次数。而且「data locality」机制可以尽可能的集中擦写块、很好的控制分配空间的连续性，减少磁盘碎片。减少磁盘碎片的策略有以下几种：</p>
+<ul>
+<li>第一种用来减少磁盘碎片的方法就是multi-block分配。当一个文件首先被创建时，系统会自动的预分配一个8kb的空间，用于数据的存储；当文件被关闭时，没有被用到的预分配的空间也会被同时释放。</li>
+<li>第二种是使用延时分配策略。当一个文件需要更多的空间时，文件系统决定延长分配空间的时间，直到所有的脏buffer要写入磁盘。除非必要(Timeout或sync或内核out of memory)，否则不写入磁盘。这样可以更好的对文件进行位置决策。</li>
+<li>第三种是文件系统尽可能的把一个文件系统的数据和inode存放在同一个block group中，能够显著减少文件系统data寻址耗时。</li>
+<li>第四种，整个卷被分割成大小为128M的groups。这样可以最大限度的保证数据局限性。然而，当在根目录创建文件时，inode分配器会扫描块组，从inode最空闲的group中分配inode空间。这种方式会扫描整个卷。但是一般而言都是按照顺序往下创建的。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/23/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Ext4文件系统分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Blocks%EF%BC%88%E5%9D%97%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">Blocks（块）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#group-%EF%BC%88%E5%9D%97%E7%BB%84%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">group （块组）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%B8%83%E5%B1%80"><span class="nav-number">1.3.</span> <span class="nav-text">磁盘布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flexible%E5%9D%97%E7%BB%84%EF%BC%88flex-bg%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">Flexible块组（flex_bg）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%9D%97%E7%BB%84%E9%9B%86%EF%BC%88Meta-Block-Groups%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">元块组集（Meta Block Groups）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E5%9D%97%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.6.</span> <span class="nav-text">延迟块组初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%9A%84inode"><span class="nav-number">1.7.</span> <span class="nav-text">特殊的inode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Block%E5%92%8CInode%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5"><span class="nav-number">1.8.</span> <span class="nav-text">Block和Inode分配策略</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Youops</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/youops" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;youops" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Youops</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
